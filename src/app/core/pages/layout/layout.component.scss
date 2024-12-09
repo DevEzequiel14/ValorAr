@@ -1,0 +1,15 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: $color-text-primary;
+}
+
+.layout-content {
+  flex: 1;
+  @include flex-center(column, center, center);
+  padding: $spacing-large;
+}

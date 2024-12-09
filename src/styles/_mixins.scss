@@ -1,0 +1,26 @@
+@mixin text-style($color, $size: $font-size-base, $weight: normal) {
+  color: $color;
+  font-size: $size;
+  font-weight: $weight;
+}
+
+@mixin flex-center($direction: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin button-style($bg-color, $text-color) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  border-radius: 4px;
+  padding: $spacing-small $spacing-medium;
+  cursor: pointer;
+  transition: $transition-standard;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+}

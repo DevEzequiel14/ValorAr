@@ -1,0 +1,14 @@
+<ng-container *ngIf="!loading">
+  <h2 class="dollars-title">Cotizaciones de todas las casas de cambio</h2>
+  <div class="chart-container" @scaleFadeIn>
+    <canvas
+      *ngIf="!loading"
+      baseChart
+      [data]="barChartData"
+      [options]="barChartOptions"
+      [type]="barChartType"
+    >
+    </canvas>
+  </div>
+</ng-container>
+<app-loading *ngIf="loading"></app-loading>

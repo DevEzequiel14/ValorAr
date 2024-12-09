@@ -1,0 +1,19 @@
+@import "../../../../../styles/variables";
+@import "../../../../../styles/mixins";
+
+.footer {
+  @include flex-center(row, center, center);
+  padding: $spacing-medium;
+  columns: $color-text-secondary;
+  font-size: .75rem;
+
+  a {
+    @include text-style($color-text-primary, .75rem);
+    text-decoration: none;
+    transition: $transition-standard;
+
+    &:hover {
+      color: lighten($color-highlight-primary, 10%);
+    }
+  }
+}

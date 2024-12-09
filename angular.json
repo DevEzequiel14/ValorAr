@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dolarApi": {
+    "ValorAr": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -62,10 +62,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "dolarApi:build:production"
+              "buildTarget": "ValorAr:build:production"
             },
             "development": {
-              "buildTarget": "dolarApi:build:development"
+              "buildTarget": "ValorAr:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -73,7 +73,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "dolarApi:build"
+            "buildTarget": "ValorAr:build"
           }
         },
         "test": {
@@ -97,5 +97,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "86207821-b87b-4a85-8502-4da06e0b3356"
   }
 }

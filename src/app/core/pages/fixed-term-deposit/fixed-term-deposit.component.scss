@@ -1,0 +1,25 @@
+@import "../../../../styles/variables";
+
+.fixed-title {
+  margin-bottom: 2rem;
+  color: $color-text-primary;
+}
+
+.chart-container {
+  position: relative;
+  margin: auto;
+  height: 60vh;
+  width: 60vw;
+
+  @media screen and (max-width: 1023px) {
+    .chart-container {
+      width: 75vw !important;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .chart-container {
+      width: 90vw !important;
+    }
+  }
+}

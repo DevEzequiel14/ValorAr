@@ -1,0 +1,14 @@
+<div *ngIf="!loading" class="fixed-term-deposit">
+  <h2 class="fixed-title">TNA por Entidad</h2>
+  <div class="chart-container" @scaleFadeIn>
+    <canvas
+      *ngIf="!loading"
+      baseChart
+      [data]="barChartData"
+      [options]="barChartOptions"
+      [type]="barChartType"
+    >
+    </canvas>
+  </div>
+</div>
+<app-loading *ngIf="loading"></app-loading>
