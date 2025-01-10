@@ -116,6 +116,7 @@ export class InflationComponent {
   populateAvailableYears(): void {
     const years = this.indicesInflacion.map(data => new Date(data.fecha).getFullYear());
     this.availableYears = Array.from(new Set(years)).sort((a, b) => (a - b)).reverse();
+    this.selectedYear = Math.max(...this.availableYears)
   }
 
   filterByYear(): void {
