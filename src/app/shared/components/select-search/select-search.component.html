@@ -1,0 +1,38 @@
+<div class="select-search">
+  <h4>{{ title }}</h4>
+  <div class="wrapper">
+    <div class="select-btn" (click)="toggleDropdown()"
+            (keydown)="handleKeyDown($event)" aria-haspopup="listbox">
+      <span>{{ selectedItem }}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M6 10l6 6l6 -6h-12" />
+      </svg>
+    </div>
+
+    <div class="content" *ngIf="isOpen">
+      <div class="search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+          <path d="M21 21l-6 -6" />
+        </svg>
+        <input type="text" [formControl]="searchControl" placeholder="Buscar..."
+               (keyup)="search($event)"/>
+      </div>
+      <ul class="options" #optionsList>
+        @for (item of filteredItems; track item) {
+          <li #optionElement class="option-item"
+              [ngClass]="{ 'selected': item === selectedItem }"
+              [attr.data-value]="item"
+              (click)="selectItem(item)"
+              (keydown)="handleItemKeyDown($event, item)">
+              {{ item }}
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</div>

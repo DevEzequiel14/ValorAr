@@ -1,0 +1,120 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+.select-search {
+  @include flex-center(flex, start, center);
+  margin-bottom: $spacing-large;
+}
+
+h4 {
+  padding-right: $spacing-small;
+}
+
+.wrapper {
+  width: 128px;
+  background-color: $color-input-bg;
+  @include text-style($color-text-primary, $font-size-small, 500);
+  border-radius: 7px;
+
+  &:hover,
+  &:focus {
+    border-color: $color-highlight-primary;
+    box-shadow: 0 0 8px $color-highlight-primary;
+  }
+}
+
+.select-btn,
+.options li {
+  @include flex-center(flex, start, center);
+  cursor: pointer;
+}
+
+.select-btn {
+  @include flex-center(flex, space-between, center);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  border: 1px solid $color-border;
+}
+
+.content {
+  width: 128px;
+  padding: 10px;
+  margin-top: 4px;
+  border-radius: $spacing-small;
+  background-color: $color-input-bg;
+  position: absolute;
+  z-index: 1000;
+}
+
+.content .search {
+  position: relative;
+  @include flex-center(flex, start, center);
+  border-radius: $spacing-small;
+  border: 1px solid black;
+  padding: 4px 8px;
+}
+
+.search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 6px 6px;
+  background-color: $color-input-bg;
+  @include text-style($color-text-primary, $font-size-small, 500);
+}
+
+.content .options {
+  margin-top: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.options::-webkit-scrollbar {
+  width: 8px;
+}
+
+.options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.options::-webkit-scrollbar-thumb {
+  background-color: $color-highlight-primary;
+  border-radius: 12px;
+  border: 2px solid $color-input-bg;
+
+  &:hover {
+    background-color: $color-highlight-secondary;
+    cursor: pointer;
+  }
+}
+
+.options li {
+  height: 32px;
+  border-radius: $spacing-small;
+  font-size: 12px;
+  padding: 6px 12px;
+  margin: 2px;
+}
+
+.options li:hover {
+  background-color: $color-hover;
+}
+
+.option-item {
+  padding: $spacing-small;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $color-highlight-primary;
+    box-shadow: 0 0 $spacing-small $color-highlight-primary;
+  }
+
+  &.selected {
+    background-color: $color-highlight-primary;
+    color: $color-text-primary;
+    font-weight: bold;
+  }
+}
