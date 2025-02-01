@@ -1,5 +1,5 @@
 import { PerformanceService } from './../../services/performance.service';
-import { NgFor, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { BaseChartDirective } from 'ng2-charts';
@@ -26,11 +26,18 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { FormsModule } from '@angular/forms';
+import { SelectSearchComponent } from '../../../shared/components/select-search/select-search.component';
 
 @Component({
   selector: 'app-performance',
   standalone: true,
-  imports: [NgIf, NgFor, LoadingComponent, BaseChartDirective],
+  imports: [
+    NgIf,
+    LoadingComponent,
+    BaseChartDirective,
+    SelectSearchComponent,
+    FormsModule],
   templateUrl: './performance.component.html',
   styleUrl: './performance.component.scss',
   animations: [
@@ -57,6 +64,10 @@ export class PerformanceComponent {
   rendimientos: Performance[] = [];
   availableCurrencies: string[] = [];
   selectedCurrency: string = '';
+  filterText: string = '';
+  filteredCurrencies: string[] = [];
+  showDropdown: boolean = false;
+  isDropdownOpen: boolean = false;
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
@@ -144,9 +155,11 @@ export class PerformanceComponent {
   initCurrencies(): void {
     const currencies = new Set<string>();
     this.rendimientos.forEach((entidad) =>
-      entidad.rendimientos.forEach((r) => currencies.add(r.moneda))
+      entidad.rendimientos.forEach((r) => {
+        if (r.apy) currencies.add(r.moneda)
+      })
     );
-    this.availableCurrencies = Array.from(currencies);
+    this.availableCurrencies = Array.from(currencies).sort((a, b) => a.localeCompare(b));
     this.selectedCurrency = this.availableCurrencies[0];
   }
 
@@ -180,9 +193,9 @@ export class PerformanceComponent {
     this.loading = false;
   }
 
-  onCurrencyChange(currency: any): void {
-    this.selectedCurrency = currency.value;
-    this.loadData(currency.value);
+  onCurrencyChange(selectedCurrency: string): void {
+    this.selectedCurrency = selectedCurrency;
+    this.loadData(selectedCurrency);
   }
 
   private getCssVariable(variable: string): string {
@@ -190,5 +203,4 @@ export class PerformanceComponent {
       .getPropertyValue(variable)
       .trim();
   }
-
 }

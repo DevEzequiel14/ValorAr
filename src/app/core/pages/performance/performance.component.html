@@ -1,26 +1,12 @@
 <div *ngIf="!loading">
-  <div class="select-container">
-    <label class="select-label" for="moneda-select"
-      >Selecciona una moneda:</label
-    >
-    <select
-      class="select-dropdown"
-      id="moneda-select"
-      (change)="onCurrencyChange($event.target)"
-    >
-      <option *ngFor="let moneda of availableCurrencies" [value]="moneda">
-        {{ moneda }}
-      </option>
-    </select>
-  </div>
-
+  <app-select-search
+    [title]="'Selecciona una moneda:'"
+    [items]="availableCurrencies"
+    (selectionChange)="onCurrencyChange($event)">
+  </app-select-search>
   <div class="chart-container" @scaleFadeIn>
-    <canvas
-      baseChart
-      [data]="barChartData"
-      [options]="barChartOptions"
-      [type]="barChartType"
-    >
+    <canvas baseChart [data]="barChartData" [options]="barChartOptions"
+            [type]="barChartType">
     </canvas>
   </div>
 </div>
