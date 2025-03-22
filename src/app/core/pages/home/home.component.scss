@@ -75,6 +75,7 @@
     box-shadow: 5px 5px 25px $color-highlight-primary;
     border: 1rem solid $color-border;
     animation: bounce 2s infinite;
+    aspect-ratio: 1/1;
   }
 
   @media screen and (max-width: 1024px) {
