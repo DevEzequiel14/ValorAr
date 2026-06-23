@@ -1,27 +1,43 @@
-# ValorAr
+# 📊 ValorAr - Información Financiera en Argentina  
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.10.
+ValorAr es una aplicación web que ofrece datos actualizados sobre **dólares, inflación, plazos fijos y rendimientos en Argentina**.  
+A través de gráficos interactivos, permite visualizar y analizar información financiera en tiempo real.
 
-## Development server
+## 🔗 Demo   
+https://valorar.netlify.app/
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🛠️ Tecnologías utilizadas  
 
-## Code scaffolding
+- **Angular 17** - Framework principal  
+- **TypeScript** - Lenguaje de programación  
+- **SCSS** - Estilos
+- **Chart.js y ng2-charts** - Gráficos   
+- **Netlify** - Despliegue automático
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 📸 Capturas de Pantalla  
 
-## Build
+![ValorAr](https://github.com/user-attachments/assets/3f5e782d-86cc-4e7b-ba5a-274fe69dba67)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## ⚙️ Instalación y Uso  
 
-## Running unit tests
+1. Clona el repositorio:  
+   ```sh
+   git clone https://github.com/tuusuario/valorAr.git
+   cd valorAr
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+2. Instala dependencias
+   ```sh   
+   npm install
+    
+3. Ejecuta en modo desarrollo
+   ```sh
+   ng serve
 
-## Running end-to-end tests
+4. Abre en el navegador 
+   http://localhost:4200
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
+## 📬 Contacto
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+📩 ezequielchorolque14@gmail.com
+🌎 LinkedIn https://www.linkedin.com/in/chorolque-ezequiel/
