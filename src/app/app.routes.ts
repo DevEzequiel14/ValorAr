@@ -18,8 +18,13 @@ export const routes: Routes = [
         loadComponent: () => import('./core/pages/inflation/inflation.component').then((m) => m.InflationComponent)
       },
       {
-        path: 'TNA',
+        path: 'plazo-fijo',
         loadComponent: () => import('./core/pages/fixed-term-deposit/fixed-term-deposit.component').then((m) => m.FixedTermDepositComponent)
+      },
+      {
+        path: 'TNA',
+        redirectTo: 'plazo-fijo',
+        pathMatch: 'full'
       },
       {
         path: 'performance',

@@ -33,7 +33,8 @@
         transition: all 0.4s ease;
       }
 
-      &:hover::before {
+      &:hover::before,
+      &.active::before {
         width: 100%;
       }
 
@@ -57,7 +58,8 @@
       opacity: 0;
     }
 
-    &.upward a:hover::before {
+    &.upward a:hover::before,
+    &.upward a.active::before {
       bottom: 0px;
       opacity: 1;
     }
@@ -69,7 +71,8 @@
       transition: transform 0.4s ease;
     }
 
-    &.forward a:hover::before {
+    &.forward a:hover::before,
+    &.forward a.active::before {
       transform: scaleX(1);
       transform-origin: left;
     }
