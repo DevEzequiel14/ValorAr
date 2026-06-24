@@ -2,22 +2,38 @@
 @import "../../../../../styles/mixins";
 
 .nav-links {
-  @include flex-center(row, space-around, center);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   background: transparent;
-  padding: $spacing-large $spacing-small;
+  padding: $spacing-medium $spacing-small;
+  gap: $spacing-small;
 
-  .links{
-    display: flex;
+  .links {
+    display: none;
+    flex-direction: column;
+    flex-basis: 100%;
+    gap: $spacing-small;
+    margin: 0;
+    padding: $spacing-small 0 0;
+    list-style: none;
+
+    &.is-open {
+      display: flex;
+    }
   }
 
   li {
     list-style: none;
-    margin: 0 $spacing-small;
+    margin: 0;
+    width: 100%;
 
     a {
       position: relative;
+      display: block;
       @include text-style($color-text-primary, $font-size-base, 500);
-      padding: 8px 0;
+      padding: $spacing-small 0;
       text-decoration: none;
       transition: $transition-standard;
 
@@ -37,14 +53,6 @@
       &.active::before {
         width: 100%;
       }
-
-      @media screen and (max-width: 1024px) {
-        font-size: 14px;
-      }
-
-      @media screen and (max-width: 767px) {
-        font-size: 12px;
-      }
     }
 
     &.center a::before {
@@ -60,7 +68,7 @@
 
     &.upward a:hover::before,
     &.upward a.active::before {
-      bottom: 0px;
+      bottom: 0;
       opacity: 1;
     }
 
@@ -85,5 +93,71 @@
 
   .icon:hover {
     box-shadow: 0px 0px 10px rgb(52, 239, 223);
+  }
+}
+
+.menu-toggle {
+  @include flex-center(column, center, center);
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: $spacing-small;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  background-color: $color-input-bg;
+  cursor: pointer;
+  transition: $transition-standard;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $color-highlight-primary;
+    box-shadow: 0 0 8px $color-highlight-primary;
+    outline: none;
+  }
+
+  &__bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: $color-text-primary;
+    border-radius: 2px;
+    transition: $transition-standard;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .nav-links {
+    @include flex-center(row, space-around, center);
+    flex-wrap: nowrap;
+    padding: $spacing-large $spacing-small;
+
+    .menu-toggle {
+      display: none;
+    }
+
+    .links {
+      display: flex;
+      flex-basis: auto;
+      flex-direction: row;
+      gap: 0;
+      padding: 0;
+    }
+
+    li {
+      width: auto;
+      margin: 0 $spacing-small;
+
+      a {
+        display: inline-block;
+        padding: 8px 0;
+        font-size: $font-size-base;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 768px) {
+  .nav-links li a {
+    font-size: 14px;
   }
 }

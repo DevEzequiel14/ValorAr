@@ -1,5 +1,5 @@
 <nav aria-label="Navegación principal" class="nav-links">
-  <a routerLink="/">
+  <a routerLink="/" class="nav-brand" (click)="closeMenu()">
     <img
       class="icon"
       src="../../../../../assets/img/dollar.webp"
@@ -7,16 +7,32 @@
       width="40"
     />
   </a>
-  <ul class="links">
-    <li><a routerLink="/dollars" routerLinkActive="active">Dolares</a></li>
+
+  <button
+    type="button"
+    class="menu-toggle"
+    [attr.aria-expanded]="isMenuOpen"
+    aria-controls="nav-menu"
+    [attr.aria-label]="isMenuOpen ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'"
+    (click)="toggleMenu()"
+  >
+    <span class="menu-toggle__bar" aria-hidden="true"></span>
+    <span class="menu-toggle__bar" aria-hidden="true"></span>
+    <span class="menu-toggle__bar" aria-hidden="true"></span>
+  </button>
+
+  <ul id="nav-menu" class="links" [class.is-open]="isMenuOpen">
+    <li>
+      <a routerLink="/dollars" routerLinkActive="active" (click)="closeMenu()">Dolares</a>
+    </li>
     <li class="center">
-      <a routerLink="/inflation" routerLinkActive="active">Inflación</a>
+      <a routerLink="/inflation" routerLinkActive="active" (click)="closeMenu()">Inflación</a>
     </li>
     <li class="upward">
-      <a routerLink="/plazo-fijo" routerLinkActive="active">Plazo fijo</a>
+      <a routerLink="/plazo-fijo" routerLinkActive="active" (click)="closeMenu()">Plazo fijo</a>
     </li>
     <li class="forward">
-      <a routerLink="/performance" routerLinkActive="active">Rendimientos</a>
+      <a routerLink="/performance" routerLinkActive="active" (click)="closeMenu()">Rendimientos</a>
     </li>
   </ul>
 </nav>
