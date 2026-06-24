@@ -1,4 +1,22 @@
-<div *ngIf="!loading">
+<app-loading *ngIf="loading"></app-loading>
+
+<app-state-message
+  *ngIf="!loading && errorMessage"
+  type="error"
+  [message]="errorMessage"
+  [showRetry]="true"
+  (retry)="fetchInflacion()"
+></app-state-message>
+
+<app-state-message
+  *ngIf="!loading && !errorMessage && isEmpty"
+  type="empty"
+  message="No hay datos de inflación disponibles."
+  [showRetry]="true"
+  (retry)="fetchInflacion()"
+></app-state-message>
+
+<ng-container *ngIf="!loading && !errorMessage && !isEmpty">
   <div class="select-container">
     <label for="year" class="select-label">Selecciona un año:</label>
     <select
@@ -22,5 +40,4 @@
     >
     </canvas>
   </div>
-</div>
-<app-loading *ngIf="loading"></app-loading>
+</ng-container>

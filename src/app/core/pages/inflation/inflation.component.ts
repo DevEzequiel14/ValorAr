@@ -1,5 +1,7 @@
 import { InflacionService } from './../../services/inflacion.service';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { IndiceInflacion } from '../../models/indice-inflacion';
 import { BaseChartDirective } from 'ng2-charts';
 import {
@@ -19,13 +21,14 @@ import {
 } from 'chart.js';
 import { NgFor, NgIf } from '@angular/common';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import { FormsModule } from '@angular/forms';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-inflation',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, BaseChartDirective, LoadingComponent],
+  imports: [NgIf, NgFor, FormsModule, BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './inflation.component.html',
   styleUrl: './inflation.component.scss',
   animations: [
@@ -41,8 +44,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 })
 export class InflationComponent {
 
-  inflationService = inject(InflacionService);
+  private readonly inflationService = inject(InflacionService);
+  private readonly destroyRef = inject(DestroyRef);
+
   loading = true;
+  errorMessage: string | null = null;
+  isEmpty = false;
   indicesInflacion: IndiceInflacion[] = [];
   selectedYear = new Date().getFullYear();
   availableYears: number[] = [];
@@ -151,17 +158,27 @@ export class InflationComponent {
   }
 
 
-  fetchInflacion() {
-    this.inflationService.getInflacion().subscribe({
+  fetchInflacion(): void {
+    this.loading = true;
+    this.errorMessage = null;
+    this.isEmpty = false;
+
+    this.inflationService.getInflacion().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (data) => {
-        this.indicesInflacion = (data);
         this.loading = false;
+        if (data.length === 0) {
+          this.isEmpty = true;
+          return;
+        }
+        this.indicesInflacion = data;
         this.populateAvailableYears();
         this.filterByYear();
       },
       error: (err) => {
-        window.alert(err);
         this.loading = false;
+        this.errorMessage = this.resolveErrorMessage(err);
       }
     });
   }
@@ -182,6 +199,16 @@ export class InflationComponent {
         }
       ]
     };
+  }
+
+  private resolveErrorMessage(err: unknown): string {
+    if (err instanceof HttpErrorResponse) {
+      if (err.status === 0) {
+        return 'No hay conexión con el servidor. Verificá tu internet e intentá de nuevo.';
+      }
+      return `No se pudieron cargar los datos de inflación (error ${err.status}).`;
+    }
+    return 'Ocurrió un error inesperado al cargar la inflación.';
   }
 
   private getCssVariable(variable: string): string {

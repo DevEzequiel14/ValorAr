@@ -1,5 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
@@ -25,7 +28,7 @@ import { DollarService } from '../../services/dollar.service';
 @Component({
   selector: 'app-dollars',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, LoadingComponent],
+  imports: [CommonModule, BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './dollars.component.html',
   styleUrl: './dollars.component.scss',
   animations: [
@@ -48,8 +51,12 @@ import { DollarService } from '../../services/dollar.service';
 })
 export class DollarsComponent {
   loading = true;
+  errorMessage: string | null = null;
+  isEmpty = false;
   dollars: Dollar[] = [];
-  dollarService = inject(DollarService);
+
+  private readonly dollarService = inject(DollarService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
@@ -110,16 +117,26 @@ export class DollarsComponent {
     this.fetchDolars();
   }
 
-  fetchDolars() {
-    this.dollarService.getDollars().subscribe({
+  fetchDolars(): void {
+    this.loading = true;
+    this.errorMessage = null;
+    this.isEmpty = false;
+
+    this.dollarService.getDollars().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (data) => {
+        this.loading = false;
+        if (data.length === 0) {
+          this.isEmpty = true;
+          return;
+        }
         this.dollars = data;
         this.updateChart(data);
-        this.loading = false;
       },
       error: (err) => {
         this.loading = false;
-        window.alert(err);
+        this.errorMessage = this.resolveErrorMessage(err);
       },
     });
   }
@@ -145,8 +162,17 @@ export class DollarsComponent {
     };
   }
 
+  private resolveErrorMessage(err: unknown): string {
+    if (err instanceof HttpErrorResponse) {
+      if (err.status === 0) {
+        return 'No hay conexión con el servidor. Verificá tu internet e intentá de nuevo.';
+      }
+      return `No se pudieron cargar las cotizaciones (error ${err.status}).`;
+    }
+    return 'Ocurrió un error inesperado al cargar las cotizaciones.';
+  }
+
   private getCssVariable(variable: string): string {
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
   }
-
 }

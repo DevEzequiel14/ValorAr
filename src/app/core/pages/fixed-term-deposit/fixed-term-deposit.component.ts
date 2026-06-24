@@ -1,7 +1,9 @@
 import { NgIf } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { FixedTermDepositService } from './../../services/fixed-term-deposit.service';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FixedTermDeposit } from '../../models/fixed-term-deposit';
 import {
   Chart,
@@ -19,6 +21,7 @@ import {
   LineElement,
 } from 'chart.js';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import {
   animate,
   state,
@@ -30,7 +33,7 @@ import {
 @Component({
   selector: 'app-fixed-term-deposit',
   standalone: true,
-  imports: [NgIf, BaseChartDirective, LoadingComponent],
+  imports: [NgIf, BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './fixed-term-deposit.component.html',
   styleUrl: './fixed-term-deposit.component.scss',
   animations: [
@@ -53,7 +56,11 @@ import {
 })
 export class FixedTermDepositComponent {
   loading = true;
-  fixedTermDepositService = inject(FixedTermDepositService);
+  errorMessage: string | null = null;
+  isEmpty = false;
+
+  private readonly fixedTermDepositService = inject(FixedTermDepositService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
@@ -121,15 +128,25 @@ export class FixedTermDepositComponent {
     this.fetchFixedTermDeposit();
   }
 
-  fetchFixedTermDeposit() {
-    this.fixedTermDepositService.getPlazoFijo().subscribe({
+  fetchFixedTermDeposit(): void {
+    this.loading = true;
+    this.errorMessage = null;
+    this.isEmpty = false;
+
+    this.fixedTermDepositService.getPlazoFijo().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (data) => {
-        this.loadData(data);
         this.loading = false;
+        if (data.length === 0) {
+          this.isEmpty = true;
+          return;
+        }
+        this.loadData(data);
       },
       error: (err) => {
         this.loading = false;
-        console.error(err);
+        this.errorMessage = this.resolveErrorMessage(err);
       },
     });
   }
@@ -153,7 +170,16 @@ export class FixedTermDepositComponent {
         },
       ],
     };
-    this.loading = false;
+  }
+
+  private resolveErrorMessage(err: unknown): string {
+    if (err instanceof HttpErrorResponse) {
+      if (err.status === 0) {
+        return 'No hay conexión con el servidor. Verificá tu internet e intentá de nuevo.';
+      }
+      return `No se pudieron cargar las tasas de plazo fijo (error ${err.status}).`;
+    }
+    return 'Ocurrió un error inesperado al cargar el plazo fijo.';
   }
 
   private getCssVariable(variable: string): string {

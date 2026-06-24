@@ -1,4 +1,22 @@
-<div *ngIf="!loading">
+<app-loading *ngIf="loading"></app-loading>
+
+<app-state-message
+  *ngIf="!loading && errorMessage"
+  type="error"
+  [message]="errorMessage"
+  [showRetry]="true"
+  (retry)="fetchRendimientos()"
+></app-state-message>
+
+<app-state-message
+  *ngIf="!loading && !errorMessage && isEmpty"
+  type="empty"
+  message="No hay rendimientos disponibles."
+  [showRetry]="true"
+  (retry)="fetchRendimientos()"
+></app-state-message>
+
+<ng-container *ngIf="!loading && !errorMessage && !isEmpty">
   <app-select-search
     [title]="'Selecciona una moneda:'"
     [items]="availableCurrencies"
@@ -10,5 +28,4 @@
             [type]="barChartType">
     </canvas>
   </div>
-</div>
-<app-loading *ngIf="loading"></app-loading>
+</ng-container>

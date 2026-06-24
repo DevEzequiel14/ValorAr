@@ -1,7 +1,10 @@
 import { PerformanceService } from './../../services/performance.service';
 import { NgIf } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
 import {
   Chart,
@@ -35,6 +38,7 @@ import { SelectSearchComponent } from '../../../shared/components/select-search/
   imports: [
     NgIf,
     LoadingComponent,
+    StateMessageComponent,
     BaseChartDirective,
     SelectSearchComponent,
     FormsModule],
@@ -59,8 +63,12 @@ import { SelectSearchComponent } from '../../../shared/components/select-search/
   ],
 })
 export class PerformanceComponent {
-  performanceService = inject(PerformanceService);
+  private readonly performanceService = inject(PerformanceService);
+  private readonly destroyRef = inject(DestroyRef);
+
   loading = true;
+  errorMessage: string | null = null;
+  isEmpty = false;
   rendimientos: Performance[] = [];
   availableCurrencies: string[] = [];
   selectedCurrency: string = '';
@@ -132,18 +140,31 @@ export class PerformanceComponent {
   }
 
 
-  fetchRendimientos() {
+  fetchRendimientos(): void {
     this.loading = true;
-    this.performanceService.getPerformance().subscribe({
+    this.errorMessage = null;
+    this.isEmpty = false;
+
+    this.performanceService.getPerformance().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (data) => {
+        this.loading = false;
+        if (data.length === 0) {
+          this.isEmpty = true;
+          return;
+        }
         this.rendimientos = JSON.parse(JSON.stringify(data));
         this.initCurrencies();
+        if (this.availableCurrencies.length === 0) {
+          this.isEmpty = true;
+          return;
+        }
         this.loadData(this.selectedCurrency || this.availableCurrencies[0]);
-        this.loading = false;
       },
       error: (err) => {
-        window.alert(err.message || 'Server Unknown Error');
         this.loading = false;
+        this.errorMessage = this.resolveErrorMessage(err);
       },
     });
   }
@@ -186,12 +207,21 @@ export class PerformanceComponent {
         },
       ],
     };
-    this.loading = false;
   }
 
   onCurrencyChange(selectedCurrency: string): void {
     this.selectedCurrency = selectedCurrency;
     this.loadData(selectedCurrency);
+  }
+
+  private resolveErrorMessage(err: unknown): string {
+    if (err instanceof HttpErrorResponse) {
+      if (err.status === 0) {
+        return 'No hay conexión con el servidor. Verificá tu internet e intentá de nuevo.';
+      }
+      return `No se pudieron cargar los rendimientos (error ${err.status}).`;
+    }
+    return 'Ocurrió un error inesperado al cargar los rendimientos.';
   }
 
   private getCssVariable(variable: string): string {
