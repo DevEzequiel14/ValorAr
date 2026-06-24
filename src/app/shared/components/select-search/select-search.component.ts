@@ -1,6 +1,19 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, Input, Output,
-         QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  QueryList,
+  SimpleChanges,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -15,73 +28,83 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './select-search.component.html',
   styleUrl: './select-search.component.scss'
 })
-export class SelectSearchComponent {
+export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
 
   @Input() title: string = '';
   @Input() items: string[] = [];
+  @Input() selectedItem: string | null = null;
   @Output() selectionChange = new EventEmitter<string>();
 
   @ViewChild('optionsList', { static: false }) optionsList!: ElementRef;
   @ViewChildren('optionElement') optionElements!: QueryList<ElementRef>;
 
-  searchControl = new FormControl('')
-  isOpen: boolean = false;
+  searchControl = new FormControl('');
+  isOpen = false;
   filteredItems: string[] = [];
-  selectedItem: string | null = null;
 
   constructor(private readonly elementRef: ElementRef) { }
 
   ngOnInit(): void {
-    this.filteredItems = [...this.items];
-    this.selectedItem = (this.filteredItems[0]);
+    this.syncItemsState();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['items'] || changes['selectedItem']) {
+      this.syncItemsState();
+    }
   }
 
   ngAfterViewInit(): void {
     this.scrollToSelectedItem();
   }
 
+  get displaySelectedItem(): string {
+    return this.resolveSelectedItem() ?? '';
+  }
+
   @HostListener('document:click', ['$event'])
-  handleOutsideClick(event: Event) {
+  handleOutsideClick(event: Event): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
     }
   }
 
-  toggleDropdown() {
-    this.isOpen = !this.isOpen
+  toggleDropdown(): void {
+    this.isOpen = !this.isOpen;
     if (this.isOpen) {
-      this.filteredItems = [...this.items];
+      this.syncItemsState(true);
       this.searchControl.setValue('');
       setTimeout(() => this.scrollToSelectedItem(), 100);
     }
   }
 
   filterItems(query: string | null): void {
+    const normalizedQuery = query?.toLowerCase() ?? '';
     this.filteredItems = this.items.filter(item =>
-      item.toLowerCase().includes(query?.toLowerCase() ?? '')
+      item.toLowerCase().includes(normalizedQuery)
     );
   }
 
-  search(event: KeyboardEvent) {
+  search(event: KeyboardEvent): void {
     const inputValue = (event.target as HTMLInputElement).value;
-    this.filteredItems = this.items.filter((item) =>
-      item.toLowerCase().includes(inputValue.toLowerCase())
-    );
+    this.filterItems(inputValue);
   }
 
-  selectItem(item: string) {
+  selectItem(item: string): void {
     this.isOpen = false;
-    this.selectedItem = item;
     this.selectionChange.emit(item);
-    this.scrollToSelectedItem();
+    setTimeout(() => this.scrollToSelectedItem(), 0);
   }
 
-  scrollToSelectedItem() {
-    if (!this.selectedItem || this.optionElements.length === 0) return;
+  scrollToSelectedItem(): void {
+    const selected = this.resolveSelectedItem();
+    if (!selected || !this.optionElements?.length) {
+      return;
+    }
     const selectedElement = this.optionElements.find(
-      (el) => el.nativeElement.getAttribute('data-value') === this.selectedItem
+      (el) => el.nativeElement.getAttribute('data-value') === selected
     );
-    if (selectedElement) selectedElement.nativeElement.scrollIntoView(
+    selectedElement?.nativeElement.scrollIntoView(
       { behavior: 'smooth', block: 'center' }
     );
   }
@@ -98,5 +121,23 @@ export class SelectSearchComponent {
       event.preventDefault();
       this.selectItem(item);
     }
+  }
+
+  private syncItemsState(resetFilter = false): void {
+    if (resetFilter || !this.isOpen) {
+      this.filteredItems = [...this.items];
+    } else {
+      this.filterItems(this.searchControl.value);
+    }
+  }
+
+  private resolveSelectedItem(): string | null {
+    if (this.items.length === 0) {
+      return this.selectedItem;
+    }
+    if (this.selectedItem && this.items.includes(this.selectedItem)) {
+      return this.selectedItem;
+    }
+    return this.items[0] ?? null;
   }
 }

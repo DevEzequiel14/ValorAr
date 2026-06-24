@@ -2,6 +2,7 @@
   <app-select-search
     [title]="'Selecciona una moneda:'"
     [items]="availableCurrencies"
+    [selectedItem]="selectedCurrency"
     (selectionChange)="onCurrencyChange($event)">
   </app-select-search>
   <div class="chart-container" @scaleFadeIn>

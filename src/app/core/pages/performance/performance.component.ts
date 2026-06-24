@@ -64,10 +64,6 @@ export class PerformanceComponent {
   rendimientos: Performance[] = [];
   availableCurrencies: string[] = [];
   selectedCurrency: string = '';
-  filterText: string = '';
-  filteredCurrencies: string[] = [];
-  showDropdown: boolean = false;
-  isDropdownOpen: boolean = false;
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
