@@ -1,19 +1,25 @@
-<section class="home-hero" @scaleFadeIn>
-  <div class="hero-container">
-    <div class="hero-text">
-      <h1>ValorAr</h1>
-      <h2>Información Financiera 🇦🇷</h2>
-      <p>
-        Consulta los valores actualizados de dólares, inflación, plazos fijos y
-        rendimientos en Argentina. Información gráfica y detallada para tomar
-        decisiones financieras.
-      </p>
-    </div>
-    <div class="hero-image">
-      <img
-        src="/assets/img/graphic.webp"
-        alt="Información financiera"
-      />
-    </div>
+<section class="home" @scaleFadeIn>
+  <header class="home-header">
+    <h1>ValorAr</h1>
+    <p class="home-subtitle">Información Financiera 🇦🇷</p>
+    <p class="home-intro">
+      Explorá indicadores clave de la economía argentina con gráficos interactivos.
+    </p>
+  </header>
+
+  <div class="hub-grid">
+    @for (card of hubCards; track card.route) {
+      <article class="hub-card">
+        <div class="hub-card__icon">
+          <img [src]="card.iconSrc" [alt]="card.iconAlt" width="28" height="28" />
+        </div>
+        <h2 class="hub-card__title">{{ card.title }}</h2>
+        <p class="hub-card__description">{{ card.description }}</p>
+        @if (card.route === '/dollars' && bluePreview) {
+          <p class="hub-card__preview">{{ bluePreview }}</p>
+        }
+        <a [routerLink]="card.route" class="hub-card__cta">Ver gráfico</a>
+      </article>
+    }
   </div>
 </section>
