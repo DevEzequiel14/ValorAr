@@ -1,0 +1,12 @@
+<div class="state-message" [class.state-message--error]="type === 'error'" [class.state-message--empty]="type === 'empty'">
+  <p class="state-message__icon" aria-hidden="true">{{ type === 'error' ? '⚠' : '∅' }}</p>
+  <p class="state-message__text">{{ message }}</p>
+  <button
+    *ngIf="showRetry"
+    type="button"
+    class="state-message__retry"
+    (click)="retry.emit()"
+  >
+    Reintentar
+  </button>
+</div>

@@ -1,0 +1,41 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+.state-message {
+  @include flex-center(column, center, center);
+  gap: $spacing-medium;
+  padding: $spacing-large;
+  text-align: center;
+  max-width: 480px;
+  margin: $spacing-large auto;
+  border-radius: 8px;
+  border: 1px solid $color-border;
+  background-color: $color-input-bg;
+
+  &--error {
+    border-color: $color-error;
+  }
+
+  &--empty {
+    border-color: $color-text-secondary;
+  }
+}
+
+.state-message__icon {
+  @include text-style($color-highlight-secondary, 32px, bold);
+  line-height: 1;
+}
+
+.state-message__text {
+  @include text-style($color-text-primary, $font-size-base, normal);
+  line-height: 1.5;
+}
+
+.state-message__retry {
+  @include button-style($color-highlight-primary, $color-input-bg);
+  margin-top: $spacing-small;
+
+  &:hover {
+    background-color: darken($color-highlight-primary, 10%);
+  }
+}
