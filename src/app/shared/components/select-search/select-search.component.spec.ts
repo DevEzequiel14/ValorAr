@@ -67,4 +67,13 @@ describe('SelectSearchComponent', () => {
 
     expect(emitSpy).toHaveBeenCalledWith('ARS');
   });
+
+  it('should close dropdown on Escape key', () => {
+    component.items = ['USD', 'ARS'];
+    component.isOpen = true;
+
+    component.handleKeyDown(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(component.isOpen).toBeFalse();
+  });
 });

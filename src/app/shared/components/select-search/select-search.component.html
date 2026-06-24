@@ -1,17 +1,20 @@
 <div class="select-search">
-  <h4>{{ title }}</h4>
+  <h4 [id]="labelId">{{ title }}</h4>
   <div class="wrapper">
     <button
       type="button"
       class="select-btn"
-      (click)="toggleDropdown()"
-      (keydown)="handleKeyDown($event)"
+      role="combobox"
+      [attr.aria-labelledby]="labelId"
       aria-haspopup="listbox"
       [attr.aria-expanded]="isOpen"
+      [attr.aria-controls]="listboxId"
+      (click)="toggleDropdown()"
+      (keydown)="handleKeyDown($event)"
     >
       <span>{{ displaySelectedItem }}</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M6 10l6 6l6 -6h-12" />
       </svg>
@@ -20,15 +23,21 @@
     <div class="content" *ngIf="isOpen">
       <div class="search">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path stroke="none" d="M0 0h24v24H0z" fill="none" />
           <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
           <path d="M21 21l-6 -6" />
         </svg>
-        <input type="text" [formControl]="searchControl" placeholder="Buscar..."
-               (keyup)="search($event)"/>
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Buscar..."
+          aria-label="Buscar opciones"
+          (keyup)="search($event)"
+          (keydown)="handleSearchKeyDown($event)"
+        />
       </div>
-      <ul class="options" #optionsList>
+      <ul [id]="listboxId" class="options" role="listbox" #optionsList>
         @for (item of filteredItems; track item) {
           <li
             #optionElement
@@ -41,7 +50,7 @@
             (click)="selectItem(item)"
             (keydown)="handleItemKeyDown($event, item)"
           >
-              {{ item }}
+            {{ item }}
           </li>
         }
       </ul>

@@ -29,6 +29,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './select-search.component.scss'
 })
 export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
+  private static instanceCounter = 0;
+  private readonly instanceSuffix = ++SelectSearchComponent.instanceCounter;
 
   @Input() title: string = '';
   @Input() items: string[] = [];
@@ -41,6 +43,8 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
   searchControl = new FormControl('');
   isOpen = false;
   filteredItems: string[] = [];
+  readonly listboxId = `select-search-listbox-${this.instanceSuffix}`;
+  readonly labelId = `select-search-label-${this.instanceSuffix}`;
 
   constructor(private readonly elementRef: ElementRef) { }
 
@@ -65,7 +69,7 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
   @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
     if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isOpen = false;
+      this.closeDropdown();
     }
   }
 
@@ -76,6 +80,10 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
       this.searchControl.setValue('');
       setTimeout(() => this.scrollToSelectedItem(), 100);
     }
+  }
+
+  closeDropdown(): void {
+    this.isOpen = false;
   }
 
   filterItems(query: string | null): void {
@@ -91,7 +99,7 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   selectItem(item: string): void {
-    this.isOpen = false;
+    this.closeDropdown();
     this.selectionChange.emit(item);
     setTimeout(() => this.scrollToSelectedItem(), 0);
   }
@@ -110,13 +118,32 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   handleKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeDropdown();
+      return;
+    }
+
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.toggleDropdown();
     }
   }
 
+  handleSearchKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeDropdown();
+    }
+  }
+
   handleItemKeyDown(event: KeyboardEvent, item: string): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeDropdown();
+      return;
+    }
+
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.selectItem(item);
