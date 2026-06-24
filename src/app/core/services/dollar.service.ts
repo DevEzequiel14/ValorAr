@@ -17,7 +17,7 @@ export class DollarService {
    * Devuelve un Observable con la lista de cotizaciones de dolares
    * en todas las casas de cambio.
    */
-  getDolars(): Observable<Dollar[]> {
+  getDollars(): Observable<Dollar[]> {
     return this.http.get<Dollar[]>(environment.dollar + '/dolares')
   }
 }

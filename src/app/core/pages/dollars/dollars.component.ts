@@ -111,7 +111,7 @@ export class DollarsComponent {
   }
 
   fetchDolars() {
-    this.dollarService.getDolars().subscribe({
+    this.dollarService.getDollars().subscribe({
       next: (data) => {
         this.dollars = data;
         this.updateChart(data);

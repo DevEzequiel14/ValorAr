@@ -26,7 +26,7 @@ describe('DollarService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch a list of dollars via getDolars', () => {
+  it('should fetch a list of dollars via getDollars', () => {
     const mockResponse: Dollar[] = [
       {
         "moneda": "USD",
@@ -46,7 +46,7 @@ describe('DollarService', () => {
       },
     ];
 
-    service.getDolars().subscribe((dollars) => {
+    service.getDollars().subscribe((dollars) => {
       expect(dollars.length).toBe(2);
       expect(dollars).toEqual(mockResponse);
     });
@@ -57,9 +57,9 @@ describe('DollarService', () => {
     req.flush(mockResponse);
   });
 
-  it('should handle HTTP errors in getDolars', () => {
+  it('should handle HTTP errors in getDollars', () => {
     const mockError = { status: 500, statusText: 'Internal Server Error' };
-    service.getDolars().subscribe({
+    service.getDollars().subscribe({
       next: () => fail('expected an error, not dollars'),
       error: (error) => {
         expect(error.status).toBe(500);
