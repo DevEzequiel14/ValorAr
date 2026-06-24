@@ -8,22 +8,18 @@ import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import {
-  Chart,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
   ChartOptions,
   ChartConfiguration,
-  LineController,
-  PointElement,
-  Title,
-  LineElement,
 } from 'chart.js';
 import { Dollar } from '../../models/dollar';
 import { DollarService } from '../../services/dollar.service';
+import {
+  getAccentPrimaryColor,
+  getAccentSecondaryColor,
+  getChartBaseOptions,
+  getChartPlugins,
+  getChartTicks,
+} from '../../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-dollars',
@@ -70,30 +66,12 @@ export class DollarsComponent {
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    maintainAspectRatio: false,
+    ...getChartBaseOptions(),
     scales: {
-      x: {
-        ticks: {
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' },
-        },
-      },
-      y: {
-        ticks: {
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' },
-        },
-      },
+      x: { ticks: getChartTicks() },
+      y: { ticks: getChartTicks() },
     },
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-        labels: { color: this.getCssVariable('--color-text-primary') },
-      },
-      tooltip: { enabled: true },
-    },
+    plugins: getChartPlugins(),
   };
 
   public barChartData: ChartConfiguration<'bar'>['data'] = {
@@ -102,28 +80,13 @@ export class DollarsComponent {
       {
         data: [],
         label: 'Compra',
-        backgroundColor: this.getCssVariable('--color-accent-primary'),
+        backgroundColor: getAccentPrimaryColor(),
       },
-      { data: [], label: 'Venta', backgroundColor: this.getCssVariable('--color-accent-secondary') },
+      { data: [], label: 'Venta', backgroundColor: getAccentSecondaryColor() },
     ],
   };
 
   ngOnInit(): void {
-    Chart.register(
-      BarController,
-      BarElement,
-      CategoryScale,
-      LinearScale,
-      Tooltip,
-      Legend,
-      LineController,
-      LineElement,
-      PointElement,
-      LinearScale,
-      Title,
-      Tooltip,
-      CategoryScale
-    );
     this.fetchDolars();
   }
 
@@ -163,12 +126,12 @@ export class DollarsComponent {
         {
           data: compraData,
           label: 'Compra',
-          backgroundColor: this.getCssVariable('--color-accent-primary'),
+          backgroundColor: getAccentPrimaryColor(),
         },
         {
           data: ventaData,
           label: 'Venta',
-          backgroundColor: this.getCssVariable('--color-accent-secondary'),
+          backgroundColor: getAccentSecondaryColor(),
         },
       ],
     };
@@ -196,9 +159,5 @@ export class DollarsComponent {
       return `No se pudieron cargar las cotizaciones (error ${err.status}).`;
     }
     return 'Ocurrió un error inesperado al cargar las cotizaciones.';
-  }
-
-  private getCssVariable(variable: string): string {
-    return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
   }
 }

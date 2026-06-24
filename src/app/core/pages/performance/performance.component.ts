@@ -7,17 +7,6 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
 import {
-  Chart,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  LineController,
-  PointElement,
-  Title,
-  LineElement,
   ChartOptions,
   ChartConfiguration,
 } from 'chart.js';
@@ -31,6 +20,13 @@ import {
 } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { SelectSearchComponent } from '../../../shared/components/select-search/select-search.component';
+import {
+  getAccentPrimaryColor,
+  getChartBaseOptions,
+  getChartPlugins,
+  getChartScaleTitle,
+  getChartTicks,
+} from '../../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-performance',
@@ -75,43 +71,21 @@ export class PerformanceComponent {
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    maintainAspectRatio: false,
+    ...getChartBaseOptions(),
     scales: {
       x: {
-        title: {
-          display: true,
-          text: 'Entidades',
-          font: { size: 12, family: 'Arial' },
-          color: this.getCssVariable('--color-text-primary'),
-        },
-        ticks: {
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' },
-        },
+        title: getChartScaleTitle('Entidades'),
+        ticks: getChartTicks(),
       },
       y: {
-        title: {
-          display: true,
-          text: 'APY (%)',
-          font: { size: 12, family: 'Arial' },
-          color: this.getCssVariable('--color-text-primary'),
-        },
+        title: getChartScaleTitle('APY (%)'),
         ticks: {
+          ...getChartTicks(),
           callback: (value) => `${value}%`,
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' },
         },
       },
     },
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-        labels: { color: this.getCssVariable('--color-text-primary') },
-      },
-      tooltip: { enabled: true },
-    },
+    plugins: getChartPlugins(),
   };
 
   public barChartData: ChartConfiguration<'bar'>['data'] = {
@@ -121,21 +95,6 @@ export class PerformanceComponent {
 
 
   ngOnInit(): void {
-    Chart.register(
-      BarController,
-      BarElement,
-      CategoryScale,
-      LinearScale,
-      Tooltip,
-      Legend,
-      LineController,
-      LineElement,
-      PointElement,
-      LinearScale,
-      Title,
-      Tooltip,
-      CategoryScale
-    );
     this.fetchRendimientos();
   }
 
@@ -203,7 +162,7 @@ export class PerformanceComponent {
         {
           data: validData,
           label: `Rendimientos en ${currency}`,
-          backgroundColor: this.getCssVariable('--color-accent-primary'),
+          backgroundColor: getAccentPrimaryColor(),
         },
       ],
     };
@@ -222,11 +181,5 @@ export class PerformanceComponent {
       return `No se pudieron cargar los rendimientos (error ${err.status}).`;
     }
     return 'Ocurrió un error inesperado al cargar los rendimientos.';
-  }
-
-  private getCssVariable(variable: string): string {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(variable)
-      .trim();
   }
 }

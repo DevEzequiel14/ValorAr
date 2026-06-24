@@ -5,6 +5,9 @@ import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideCharts } from 'ng2-charts';
+import { registerChartJs } from './shared/charts/chart-register';
+
+registerChartJs();
 
 export const appConfig: ApplicationConfig = {
   providers: [

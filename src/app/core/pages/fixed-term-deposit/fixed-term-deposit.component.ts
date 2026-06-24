@@ -6,19 +6,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FixedTermDeposit } from '../../models/fixed-term-deposit';
 import {
-  Chart,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
   ChartOptions,
   ChartConfiguration,
-  LineController,
-  PointElement,
-  Title,
-  LineElement,
 } from 'chart.js';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
@@ -29,6 +18,14 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import {
+  getAccentPrimaryColor,
+  getAccentSecondaryColor,
+  getChartBaseOptions,
+  getChartPlugins,
+  getChartScaleTitle,
+  getChartTextColor,
+} from '../../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-fixed-term-deposit',
@@ -64,31 +61,23 @@ export class FixedTermDepositComponent {
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
-    responsive: true,
-    maintainAspectRatio: false,
+    ...getChartBaseOptions(),
     indexAxis: 'y',
-    plugins: {
-      legend: { display: true, position: 'top', labels: { color: this.getCssVariable('--color-text-primary') } },
-      tooltip: { enabled: true },
-    },
+    plugins: getChartPlugins(),
     scales: {
       x: {
-        title: {
-          display: true,
-          text: 'TNA (%)',
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' },
+        title: getChartScaleTitle('TNA (%)'),
+        ticks: {
+          color: getChartTextColor(),
+          font: { size: 12 },
         },
-        ticks: { color: this.getCssVariable('--color-text-primary'), font: { size: 12 } },
       },
       y: {
-        title: {
-          display: true,
-          text: '',
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' },
+        title: getChartScaleTitle(''),
+        ticks: {
+          color: getChartTextColor(),
+          font: { size: 12 },
         },
-        ticks: { color: this.getCssVariable('--color-text-primary'), font: { size: 12 } },
       },
     },
   };
@@ -99,32 +88,17 @@ export class FixedTermDepositComponent {
       {
         data: [],
         label: 'TNA Clientes',
-        backgroundColor: this.getCssVariable('--color-accent-primary'),
+        backgroundColor: getAccentPrimaryColor(),
       },
       {
         data: [],
         label: 'TNA No Clientes',
-        backgroundColor: this.getCssVariable('--color-accent-secondary'),
+        backgroundColor: getAccentSecondaryColor(),
       },
     ],
   };
 
   ngOnInit(): void {
-    Chart.register(
-      BarController,
-      BarElement,
-      CategoryScale,
-      LinearScale,
-      Tooltip,
-      Legend,
-      LineController,
-      LineElement,
-      PointElement,
-      LinearScale,
-      Title,
-      Tooltip,
-      CategoryScale
-    );
     this.fetchFixedTermDeposit();
   }
 
@@ -161,12 +135,12 @@ export class FixedTermDepositComponent {
         {
           data: tnaClientes,
           label: 'TNA Clientes',
-          backgroundColor: this.getCssVariable('--color-accent-primary'),
+          backgroundColor: getAccentPrimaryColor(),
         },
         {
           data: tnaNoClientes,
           label: 'TNA No Clientes',
-          backgroundColor: this.getCssVariable('--color-accent-secondary'),
+          backgroundColor: getAccentSecondaryColor(),
         },
       ],
     };
@@ -180,9 +154,5 @@ export class FixedTermDepositComponent {
       return `No se pudieron cargar las tasas de plazo fijo (error ${err.status}).`;
     }
     return 'Ocurrió un error inesperado al cargar el plazo fijo.';
-  }
-
-  private getCssVariable(variable: string): string {
-    return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
   }
 }

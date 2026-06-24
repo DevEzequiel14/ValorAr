@@ -5,25 +5,22 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { IndiceInflacion } from '../../models/indice-inflacion';
 import { BaseChartDirective } from 'ng2-charts';
 import {
-  Chart,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
   ChartOptions,
   ChartConfiguration,
-  LineController,
-  PointElement,
-  Title,
-  LineElement
 } from 'chart.js';
 import { NgFor, NgIf } from '@angular/common';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import { FormsModule } from '@angular/forms';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  getAccentPrimaryColor,
+  getBackgroundSecondaryColor,
+  getChartBaseOptions,
+  getChartPlugins,
+  getChartScaleTitle,
+  getChartTicks,
+} from '../../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-inflation',
@@ -61,8 +58,8 @@ export class InflationComponent {
       {
         data: [],
         label: 'Índice de Inflación',
-        borderColor: this.getCssVariable('--color-accent-primary'),
-        backgroundColor: this.getCssVariable('--color-background-secondary'),
+        borderColor: getAccentPrimaryColor(),
+        backgroundColor: getBackgroundSecondaryColor(),
         fill: true,
         tension: 0.4
       }
@@ -70,53 +67,21 @@ export class InflationComponent {
   };
 
   public lineChartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-        labels: {
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' }
-        }
-      },
-      tooltip: { enabled: true }
-    },
+    ...getChartBaseOptions(),
+    plugins: getChartPlugins(),
     scales: {
       x: {
-        ticks: {
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' }
-        },
-        title: { display: true, text: 'Meses', color: this.getCssVariable('--color-text-primary') }
+        ticks: getChartTicks(),
+        title: getChartScaleTitle('Meses'),
       },
       y: {
-        ticks: {
-          color: this.getCssVariable('--color-text-primary'),
-          font: { size: 12, family: 'Arial' }
-        },
-        title: { display: true, text: 'Índice (%)', color: this.getCssVariable('--color-text-primary') }
-      }
-    }
+        ticks: getChartTicks(),
+        title: getChartScaleTitle('Índice (%)'),
+      },
+    },
   };
 
   ngOnInit(): void {
-    Chart.register(
-      BarController,
-      BarElement,
-      CategoryScale,
-      LinearScale,
-      Tooltip,
-      Legend,
-      LineController,
-      LineElement,
-      PointElement,
-      LinearScale,
-      Title,
-      Tooltip,
-      CategoryScale
-    );
     this.fetchInflacion();
   }
 
@@ -147,8 +112,8 @@ export class InflationComponent {
         {
           data: values,
           label: `Índice de Inflación (${this.selectedYear})`,
-          borderColor: this.getCssVariable('--color-accent-primary'),
-          backgroundColor: this.getCssVariable('--color-background-secondary'),
+          borderColor: getAccentPrimaryColor(),
+          backgroundColor: getBackgroundSecondaryColor(),
           fill: true,
           tension: 0.4,
         }
@@ -192,8 +157,8 @@ export class InflationComponent {
         {
           data: values,
           label: 'Índice de Inflación',
-          borderColor: this.getCssVariable('--color-accent-primary'),
-          backgroundColor: this.getCssVariable('--color-background-secondary'),
+          borderColor: getAccentPrimaryColor(),
+          backgroundColor: getBackgroundSecondaryColor(),
           fill: true,
           tension: 0.4
         }
@@ -209,9 +174,5 @@ export class InflationComponent {
       return `No se pudieron cargar los datos de inflación (error ${err.status}).`;
     }
     return 'Ocurrió un error inesperado al cargar la inflación.';
-  }
-
-  private getCssVariable(variable: string): string {
-    return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
   }
 }
