@@ -54,6 +54,16 @@ export class DollarsComponent {
   errorMessage: string | null = null;
   isEmpty = false;
   dollars: Dollar[] = [];
+  lastUpdated: string | null = null;
+
+  private readonly dateTimeFormatter = new Intl.DateTimeFormat('es-AR', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
 
   private readonly dollarService = inject(DollarService);
   private readonly destroyRef = inject(DestroyRef);
@@ -121,6 +131,7 @@ export class DollarsComponent {
     this.loading = true;
     this.errorMessage = null;
     this.isEmpty = false;
+    this.lastUpdated = null;
 
     this.dollarService.getDollars().pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -133,6 +144,7 @@ export class DollarsComponent {
         }
         this.dollars = data;
         this.updateChart(data);
+        this.setLastUpdated(data);
       },
       error: (err) => {
         this.loading = false;
@@ -160,6 +172,20 @@ export class DollarsComponent {
         },
       ],
     };
+  }
+
+  private setLastUpdated(dollars: Dollar[]): void {
+    const latestTimestamp = dollars.reduce((max, dollar) => {
+      const time = new Date(dollar.fechaActualizacion).getTime();
+      return Number.isNaN(time) ? max : Math.max(max, time);
+    }, 0);
+
+    if (latestTimestamp === 0) {
+      this.lastUpdated = null;
+      return;
+    }
+
+    this.lastUpdated = `Actualizado: ${this.dateTimeFormatter.format(new Date(latestTimestamp))}`;
   }
 
   private resolveErrorMessage(err: unknown): string {
