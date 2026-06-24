@@ -1,43 +1,97 @@
-# 📊 ValorAr - Información Financiera en Argentina  
+# ValorAr
 
-ValorAr es una aplicación web que ofrece datos actualizados sobre **dólares, inflación, plazos fijos y rendimientos en Argentina**.  
-A través de gráficos interactivos, permite visualizar y analizar información financiera en tiempo real.
+Aplicación web para consultar indicadores financieros de Argentina con gráficos interactivos. Centraliza cotizaciones del dólar, evolución de la inflación, tasas de plazo fijo y rendimientos APY por entidad, con datos obtenidos de APIs públicas.
 
-## 🔗 Demo   
-https://valorar.netlify.app/
+**Demo:** [valorar.netlify.app](https://valorar.netlify.app/)
 
-## 🛠️ Tecnologías utilizadas  
+## Objetivo
 
-- **Angular 17** - Framework principal  
-- **TypeScript** - Lenguaje de programación  
-- **SCSS** - Estilos
-- **Chart.js y ng2-charts** - Gráficos   
-- **Netlify** - Despliegue automático
+Ofrecer una interfaz clara y responsive para explorar información económica relevante del día a día en Argentina, sin registro ni backend propio. El foco está en la visualización de datos y una experiencia de navegación simple entre secciones.
 
-## 📸 Capturas de Pantalla  
+## Stack
 
-![ValorAr](https://github.com/user-attachments/assets/3f5e782d-86cc-4e7b-ba5a-274fe69dba67)
+| Tecnología | Uso |
+|---|---|
+| **Angular 17** | Framework SPA con componentes standalone |
+| **TypeScript** | Tipado estático y modelos de dominio |
+| **RxJS** | Consumo reactivo de APIs con `HttpClient` |
+| **Chart.js** | Gráficos de barras y líneas |
+| **ng2-charts** | Integración de Chart.js con Angular |
+| **SCSS** | Estilos con variables y mixins compartidos |
 
-## ⚙️ Instalación y Uso  
+## APIs consumidas
 
-1. Clona el repositorio:  
-   ```sh
-   git clone https://github.com/tuusuario/valorAr.git
-   cd valorAr
+| Fuente | Endpoint | Sección |
+|---|---|---|
+| [dolarapi.com](https://dolarapi.com) | `GET https://dolarapi.com/v1/dolares` | Dólares |
+| [argentinadatos.com](https://argentinadatos.com) | `GET https://api.argentinadatos.com/v1/finanzas/indices/inflacion` | Inflación |
+| [argentinadatos.com](https://argentinadatos.com) | `GET https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo` | Plazo fijo |
+| [argentinadatos.com](https://argentinadatos.com) | `GET https://api.argentinadatos.com/v1/finanzas/rendimientos` | Rendimientos |
 
-2. Instala dependencias
-   ```sh   
-   npm install
-    
-3. Ejecuta en modo desarrollo
-   ```sh
-   ng serve
+## Rutas
 
-4. Abre en el navegador 
-   http://localhost:4200
+| Ruta | Descripción |
+|---|---|
+| `/` | Home con acceso rápido a cada sección |
+| `/dollars` | Cotizaciones de compra y venta por casa de cambio |
+| `/inflation` | Índice de inflación mensual (filtro por año) |
+| `/plazo-fijo` | TNA por entidad financiera |
+| `/performance` | Rendimientos APY por entidad y moneda |
+| `/TNA` | Redirección permanente a `/plazo-fijo` |
 
+## Capturas
 
-## 📬 Contacto
+![ValorAr — vista principal](https://github.com/user-attachments/assets/3f5e782d-86cc-4e7b-ba5a-274fe69dba67)
 
-📩 ezequielchorolque14@gmail.com
-🌎 LinkedIn https://www.linkedin.com/in/chorolque-ezequiel/
+## Instalación
+
+```bash
+git clone https://github.com/DevEzequiel14/ValorAr.git
+cd ValorAr
+npm install
+npm start
+```
+
+La app queda disponible en `http://localhost:4200/`.
+
+## Scripts
+
+| Comando | Descripción |
+|---|---|
+| `npm start` | Servidor de desarrollo (`ng serve`) |
+| `npm run build` | Build de producción en `dist/dolar-api` |
+| `npm test` | Tests unitarios con Karma/Jasmine |
+| `npm run lint` | Análisis estático con ESLint |
+
+## Deploy en Netlify
+
+El proyecto se despliega en Netlify con build command `npm run build` y publish directory `dist/dolar-api`.
+
+Para el enrutamiento SPA y compatibilidad con URLs antiguas, `src/_redirects` se incluye como asset en el build:
+
+```
+/TNA    /plazo-fijo    301
+/*      /index.html    200
+```
+
+- La regla `/*` redirige todas las rutas a `index.html` (status 200) para que Angular Router resuelva la navegación del lado del cliente.
+- La regla `/TNA` mantiene enlaces legacy hacia la sección de plazo fijo.
+
+## Decisiones técnicas
+
+- **Lazy loading:** cada página se carga bajo demanda con `loadComponent`, reduciendo el bundle inicial.
+- **Standalone components:** sin NgModules; cada componente declara sus propias dependencias.
+- **Una ruta por feature:** cada indicador financiero tiene su propia ruta, componente, servicio y modelo, lo que facilita mantener y extender el proyecto.
+- **Registro centralizado de Chart.js:** configuración y tema de gráficos compartidos en `src/app/shared/charts/`.
+- **Manejo de estados de UI:** loading, error y datos vacíos con un componente reutilizable (`state-message`).
+
+## Autor
+
+**Ezequiel Chorolque**
+
+- LinkedIn: [linkedin.com/in/chorolque-ezequiel](https://www.linkedin.com/in/chorolque-ezequiel/)
+- Email: ezequielchorolque14@gmail.com
+
+## Licencia
+
+Proyecto de portfolio con fines educativos y demostrativos. Los datos provienen de APIs de terceros; consultar los términos de uso de [dolarapi.com](https://dolarapi.com) y [argentinadatos.com](https://argentinadatos.com).
