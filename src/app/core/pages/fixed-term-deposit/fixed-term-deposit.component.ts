@@ -2,6 +2,7 @@ import { NgIf } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { FixedTermDepositService } from './../../services/fixed-term-deposit.service';
 import { Component, inject } from '@angular/core';
+import { FixedTermDeposit } from '../../models/fixed-term-deposit';
 import {
   Chart,
   BarController,
@@ -133,14 +134,7 @@ export class FixedTermDepositComponent {
     });
   }
 
-  loadData(
-    data: {
-      entidad: string;
-      logo: string;
-      tnaClientes: number;
-      tnaNoClientes: number;
-    }[]
-  ): void {
+  loadData(data: FixedTermDeposit[]): void {
     const labels = data.map((d) => d.entidad);
     const tnaClientes = data.map((d) => d.tnaClientes);
     const tnaNoClientes = data.map((d) => d.tnaNoClientes);
