@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -45,7 +45,7 @@ import {
     ]),
   ],
 })
-export class DollarsComponent {
+export class DollarsComponent implements OnInit {
   loading = true;
   errorMessage: string | null = null;
   isEmpty = false;

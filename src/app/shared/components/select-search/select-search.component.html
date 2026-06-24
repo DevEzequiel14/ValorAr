@@ -1,15 +1,21 @@
 <div class="select-search">
   <h4>{{ title }}</h4>
   <div class="wrapper">
-    <div class="select-btn" (click)="toggleDropdown()"
-            (keydown)="handleKeyDown($event)" aria-haspopup="listbox">
+    <button
+      type="button"
+      class="select-btn"
+      (click)="toggleDropdown()"
+      (keydown)="handleKeyDown($event)"
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="isOpen"
+    >
       <span>{{ displaySelectedItem }}</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M6 10l6 6l6 -6h-12" />
       </svg>
-    </div>
+    </button>
 
     <div class="content" *ngIf="isOpen">
       <div class="search">
@@ -24,11 +30,17 @@
       </div>
       <ul class="options" #optionsList>
         @for (item of filteredItems; track item) {
-          <li #optionElement class="option-item"
-              [ngClass]="{ 'selected': item === displaySelectedItem }"
-              [attr.data-value]="item"
-              (click)="selectItem(item)"
-              (keydown)="handleItemKeyDown($event, item)">
+          <li
+            #optionElement
+            class="option-item"
+            tabindex="0"
+            role="option"
+            [attr.aria-selected]="item === displaySelectedItem"
+            [ngClass]="{ 'selected': item === displaySelectedItem }"
+            [attr.data-value]="item"
+            (click)="selectItem(item)"
+            (keydown)="handleItemKeyDown($event, item)"
+          >
               {{ item }}
           </li>
         }

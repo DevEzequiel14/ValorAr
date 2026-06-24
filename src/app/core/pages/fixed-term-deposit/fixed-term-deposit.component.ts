@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { FixedTermDepositService } from './../../services/fixed-term-deposit.service';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FixedTermDeposit } from '../../models/fixed-term-deposit';
@@ -51,7 +51,7 @@ import {
     ]),
   ],
 })
-export class FixedTermDepositComponent {
+export class FixedTermDepositComponent implements OnInit {
   loading = true;
   errorMessage: string | null = null;
   isEmpty = false;

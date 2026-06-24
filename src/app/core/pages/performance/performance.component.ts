@@ -1,6 +1,6 @@
 import { PerformanceService } from './../../services/performance.service';
 import { NgIf } from '@angular/common';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -58,7 +58,7 @@ import {
     ]),
   ],
 })
-export class PerformanceComponent {
+export class PerformanceComponent implements OnInit {
   private readonly performanceService = inject(PerformanceService);
   private readonly destroyRef = inject(DestroyRef);
 

@@ -1,5 +1,5 @@
 import { InflacionService } from './../../services/inflacion.service';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IndiceInflacion } from '../../models/indice-inflacion';
@@ -39,7 +39,7 @@ import {
     ])
   ]
 })
-export class InflationComponent {
+export class InflationComponent implements OnInit {
 
   private readonly inflationService = inject(InflacionService);
   private readonly destroyRef = inject(DestroyRef);
