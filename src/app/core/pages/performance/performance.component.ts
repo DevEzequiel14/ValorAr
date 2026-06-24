@@ -1,6 +1,6 @@
 import { PerformanceService } from './../../services/performance.service';
 import { NgIf } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -40,6 +40,7 @@ import {
     FormsModule],
   templateUrl: './performance.component.html',
   styleUrl: './performance.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
       state(
@@ -61,6 +62,7 @@ import {
 export class PerformanceComponent implements OnInit {
   private readonly performanceService = inject(PerformanceService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   loading = true;
   errorMessage: string | null = null;
@@ -111,19 +113,23 @@ export class PerformanceComponent implements OnInit {
         this.loading = false;
         if (data.length === 0) {
           this.isEmpty = true;
+          this.cdr.markForCheck();
           return;
         }
         this.rendimientos = JSON.parse(JSON.stringify(data));
         this.initCurrencies();
         if (this.availableCurrencies.length === 0) {
           this.isEmpty = true;
+          this.cdr.markForCheck();
           return;
         }
         this.loadData(this.selectedCurrency || this.availableCurrencies[0]);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.loading = false;
         this.errorMessage = this.resolveErrorMessage(err);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -135,7 +141,7 @@ export class PerformanceComponent implements OnInit {
         if (r.apy) currencies.add(r.moneda)
       })
     );
-    this.availableCurrencies = Array.from(currencies).sort((a, b) => a.localeCompare(b));
+    this.availableCurrencies = [...Array.from(currencies).sort((a, b) => a.localeCompare(b))];
     this.selectedCurrency = this.availableCurrencies[0];
   }
 

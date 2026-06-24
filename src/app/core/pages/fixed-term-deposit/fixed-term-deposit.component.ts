@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { FixedTermDepositService } from './../../services/fixed-term-deposit.service';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FixedTermDeposit } from '../../models/fixed-term-deposit';
@@ -33,6 +33,7 @@ import {
   imports: [NgIf, BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './fixed-term-deposit.component.html',
   styleUrl: './fixed-term-deposit.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
       state(
@@ -58,6 +59,7 @@ export class FixedTermDepositComponent implements OnInit {
 
   private readonly fixedTermDepositService = inject(FixedTermDepositService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
@@ -114,13 +116,16 @@ export class FixedTermDepositComponent implements OnInit {
         this.loading = false;
         if (data.length === 0) {
           this.isEmpty = true;
+          this.cdr.markForCheck();
           return;
         }
         this.loadData(data);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.loading = false;
         this.errorMessage = this.resolveErrorMessage(err);
+        this.cdr.markForCheck();
       },
     });
   }

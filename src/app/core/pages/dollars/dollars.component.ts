@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -27,6 +27,7 @@ import {
   imports: [CommonModule, BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './dollars.component.html',
   styleUrl: './dollars.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
       state(
@@ -63,6 +64,7 @@ export class DollarsComponent implements OnInit {
 
   private readonly dollarService = inject(DollarService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
@@ -103,15 +105,18 @@ export class DollarsComponent implements OnInit {
         this.loading = false;
         if (data.length === 0) {
           this.isEmpty = true;
+          this.cdr.markForCheck();
           return;
         }
-        this.dollars = data;
+        this.dollars = [...data];
         this.updateChart(data);
         this.setLastUpdated(data);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.loading = false;
         this.errorMessage = this.resolveErrorMessage(err);
+        this.cdr.markForCheck();
       },
     });
   }

@@ -1,5 +1,5 @@
 import { InflacionService } from './../../services/inflacion.service';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IndiceInflacion } from '../../models/indice-inflacion';
@@ -28,6 +28,7 @@ import {
   imports: [NgIf, NgFor, FormsModule, BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './inflation.component.html',
   styleUrl: './inflation.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
       state('void', style({
@@ -43,6 +44,7 @@ export class InflationComponent implements OnInit {
 
   private readonly inflationService = inject(InflacionService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   loading = true;
   errorMessage: string | null = null;
@@ -87,7 +89,7 @@ export class InflationComponent implements OnInit {
 
   populateAvailableYears(): void {
     const years = this.indicesInflacion.map(data => new Date(data.fecha).getFullYear());
-    this.availableYears = Array.from(new Set(years)).sort((a, b) => (a - b)).reverse();
+    this.availableYears = [...Array.from(new Set(years)).sort((a, b) => (a - b)).reverse()];
     this.selectedYear = Math.max(...this.availableYears)
   }
 
@@ -135,15 +137,18 @@ export class InflationComponent implements OnInit {
         this.loading = false;
         if (data.length === 0) {
           this.isEmpty = true;
+          this.cdr.markForCheck();
           return;
         }
-        this.indicesInflacion = data;
+        this.indicesInflacion = [...data];
         this.populateAvailableYears();
         this.filterByYear();
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.loading = false;
         this.errorMessage = this.resolveErrorMessage(err);
+        this.cdr.markForCheck();
       }
     });
   }

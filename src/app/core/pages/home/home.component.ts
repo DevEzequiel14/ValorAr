@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import { DollarService } from '../../services/dollar.service';
@@ -18,6 +18,7 @@ interface HubCard {
   imports: [RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
       state('void', style({
@@ -65,6 +66,7 @@ export class HomeComponent implements OnInit {
 
   private readonly dollarService = inject(DollarService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.loadBluePreview();
@@ -82,6 +84,7 @@ export class HomeComponent implements OnInit {
           return;
         }
         this.bluePreview = `Blue: $${blue.venta.toLocaleString('es-AR')}`;
+        this.cdr.markForCheck();
       },
       error: () => {
         // La card se muestra sin preview si falla el fetch
