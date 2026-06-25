@@ -1,23 +1,21 @@
 import { PerformanceService } from './../../services/performance.service';
 import { NgIf } from '@angular/common';
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
-import {
-  ChartOptions,
-  ChartConfiguration,
-} from 'chart.js';
+import { ChartOptions, ChartConfiguration } from 'chart.js';
 import { Performance } from '../../models/performance';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { SelectSearchComponent } from '../../../shared/components/select-search/select-search.component';
 import {
@@ -37,7 +35,8 @@ import {
     StateMessageComponent,
     BaseChartDirective,
     SelectSearchComponent,
-    FormsModule],
+    FormsModule,
+  ],
   templateUrl: './performance.component.html',
   styleUrl: './performance.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,10 +50,7 @@ import {
         })
       ),
       transition(':enter', [
-        animate(
-          '400ms ease-in-out',
-          style({ transform: 'scale(1)', opacity: 1 })
-        ),
+        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 })),
       ]),
     ]),
   ],
@@ -95,50 +91,49 @@ export class PerformanceComponent implements OnInit {
     datasets: [],
   };
 
-
   ngOnInit(): void {
     this.fetchRendimientos();
   }
-
 
   fetchRendimientos(): void {
     this.loading = true;
     this.errorMessage = null;
     this.isEmpty = false;
 
-    this.performanceService.getPerformance().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (data) => {
-        this.loading = false;
-        if (data.length === 0) {
-          this.isEmpty = true;
+    this.performanceService
+      .getPerformance()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.loading = false;
+          if (data.length === 0) {
+            this.isEmpty = true;
+            this.cdr.markForCheck();
+            return;
+          }
+          this.rendimientos = JSON.parse(JSON.stringify(data));
+          this.initCurrencies();
+          if (this.availableCurrencies.length === 0) {
+            this.isEmpty = true;
+            this.cdr.markForCheck();
+            return;
+          }
+          this.loadData(this.selectedCurrency || this.availableCurrencies[0]);
           this.cdr.markForCheck();
-          return;
-        }
-        this.rendimientos = JSON.parse(JSON.stringify(data));
-        this.initCurrencies();
-        if (this.availableCurrencies.length === 0) {
-          this.isEmpty = true;
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = this.resolveErrorMessage(err);
           this.cdr.markForCheck();
-          return;
-        }
-        this.loadData(this.selectedCurrency || this.availableCurrencies[0]);
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = this.resolveErrorMessage(err);
-        this.cdr.markForCheck();
-      },
-    });
+        },
+      });
   }
 
   initCurrencies(): void {
     const currencies = new Set<string>();
     this.rendimientos.forEach((entidad) =>
       entidad.rendimientos.forEach((r) => {
-        if (r.apy) currencies.add(r.moneda)
+        if (r.apy) currencies.add(r.moneda);
       })
     );
     this.availableCurrencies = [...Array.from(currencies).sort((a, b) => a.localeCompare(b))];

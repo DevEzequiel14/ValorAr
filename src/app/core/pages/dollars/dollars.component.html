@@ -20,12 +20,7 @@
   <h2 class="dollars-title">Cotizaciones de todas las casas de cambio</h2>
   <p *ngIf="lastUpdated" class="dollars-updated">{{ lastUpdated }}</p>
   <div class="chart-container" @scaleFadeIn>
-    <canvas
-      baseChart
-      [data]="barChartData"
-      [options]="barChartOptions"
-      [type]="barChartType"
-    >
+    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
     </canvas>
   </div>
 </ng-container>

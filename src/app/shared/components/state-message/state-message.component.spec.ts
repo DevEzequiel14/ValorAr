@@ -15,11 +15,7 @@ describe('StateMessageComponent', () => {
     component = fixture.componentInstance;
   });
 
-  function render(
-    type: 'error' | 'empty',
-    message: string,
-    showRetry = false
-  ): void {
+  function render(type: 'error' | 'empty', message: string, showRetry = false): void {
     component.type = type;
     component.message = message;
     component.showRetry = showRetry;
@@ -32,9 +28,9 @@ describe('StateMessageComponent', () => {
     const root = fixture.nativeElement.querySelector('.state-message');
     expect(root.classList.contains('state-message--error')).toBeTrue();
     expect(root.classList.contains('state-message--empty')).toBeFalse();
-    expect(
-      fixture.nativeElement.querySelector('.state-message__text').textContent
-    ).toContain('No se pudieron cargar los datos.');
+    expect(fixture.nativeElement.querySelector('.state-message__text').textContent).toContain(
+      'No se pudieron cargar los datos.'
+    );
   });
 
   it('should render empty message with empty styling', () => {
@@ -43,23 +39,19 @@ describe('StateMessageComponent', () => {
     const root = fixture.nativeElement.querySelector('.state-message');
     expect(root.classList.contains('state-message--empty')).toBeTrue();
     expect(root.classList.contains('state-message--error')).toBeFalse();
-    expect(
-      fixture.nativeElement.querySelector('.state-message__text').textContent
-    ).toContain('No hay datos disponibles.');
+    expect(fixture.nativeElement.querySelector('.state-message__text').textContent).toContain(
+      'No hay datos disponibles.'
+    );
   });
 
   it('should show retry button only when showRetry is true', () => {
     render('error', 'Error', false);
-    expect(
-      fixture.nativeElement.querySelector('.state-message__retry')
-    ).toBeNull();
+    expect(fixture.nativeElement.querySelector('.state-message__retry')).toBeNull();
 
     component.showRetry = true;
     fixture.detectChanges();
 
-    expect(
-      fixture.nativeElement.querySelector('.state-message__retry')
-    ).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.state-message__retry')).toBeTruthy();
   });
 
   it('should emit retry when retry button is clicked', () => {

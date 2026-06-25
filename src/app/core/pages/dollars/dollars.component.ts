@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -7,10 +14,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
-import {
-  ChartOptions,
-  ChartConfiguration,
-} from 'chart.js';
+import { ChartOptions, ChartConfiguration } from 'chart.js';
 import { Dollar } from '../../models/dollar';
 import { DollarService } from '../../services/dollar.service';
 import {
@@ -38,10 +42,7 @@ import {
         })
       ),
       transition(':enter', [
-        animate(
-          '400ms ease-in-out',
-          style({ transform: 'scale(1)', opacity: 1 })
-        ),
+        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 })),
       ]),
     ]),
   ],
@@ -98,27 +99,28 @@ export class DollarsComponent implements OnInit {
     this.isEmpty = false;
     this.lastUpdated = null;
 
-    this.dollarService.getDollars().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (data) => {
-        this.loading = false;
-        if (data.length === 0) {
-          this.isEmpty = true;
+    this.dollarService
+      .getDollars()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.loading = false;
+          if (data.length === 0) {
+            this.isEmpty = true;
+            this.cdr.markForCheck();
+            return;
+          }
+          this.dollars = [...data];
+          this.updateChart(data);
+          this.setLastUpdated(data);
           this.cdr.markForCheck();
-          return;
-        }
-        this.dollars = [...data];
-        this.updateChart(data);
-        this.setLastUpdated(data);
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = this.resolveErrorMessage(err);
-        this.cdr.markForCheck();
-      },
-    });
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = this.resolveErrorMessage(err);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   updateChart(dollars: Dollar[]): void {

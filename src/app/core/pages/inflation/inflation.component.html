@@ -19,12 +19,7 @@
 <ng-container *ngIf="!loading && !errorMessage && !isEmpty">
   <div class="select-container">
     <label for="year" class="select-label">Selecciona un año:</label>
-    <select
-      id="year"
-      class="select-dropdown"
-      [(ngModel)]="selectedYear"
-      (change)="filterByYear()"
-    >
+    <select id="year" class="select-dropdown" [(ngModel)]="selectedYear" (change)="filterByYear()">
       <option *ngFor="let year of availableYears" [value]="year">
         {{ year }}
       </option>
@@ -32,12 +27,7 @@
   </div>
 
   <div class="chart-container" @scaleFadeIn>
-    <canvas
-      baseChart
-      [data]="lineChartData"
-      [options]="lineChartOptions"
-      [type]="lineChartType"
-    >
+    <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType">
     </canvas>
   </div>
 </ng-container>

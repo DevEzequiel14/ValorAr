@@ -36,11 +36,7 @@ describe('PerformanceComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PerformanceComponent],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideNoopAnimations(),
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PerformanceComponent);
@@ -124,24 +120,18 @@ describe('PerformanceComponent', () => {
 
   it('should set errorMessage on HTTP error', () => {
     initComponent();
-    httpMock
-      .expectOne(apiUrl)
-      .flush('Error', { status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
     expect(component.isEmpty).toBe(false);
-    expect(component.errorMessage).toBe(
-      'No se pudieron cargar los rendimientos (error 500).'
-    );
+    expect(component.errorMessage).toBe('No se pudieron cargar los rendimientos (error 500).');
     expect(fixture.nativeElement.querySelector('.state-message--error')).toBeTruthy();
   });
 
   it('should retry fetch when StateMessage emits retry', () => {
     initComponent();
-    httpMock
-      .expectOne(apiUrl)
-      .flush('Error', { status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
 
     const retryButton: HTMLButtonElement | null =

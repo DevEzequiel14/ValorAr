@@ -19,11 +19,7 @@ export function getChartFont(size = 12, family = 'Arial') {
   return { size, family };
 }
 
-export function getChartTicks(options?: {
-  color?: string;
-  size?: number;
-  family?: string;
-}) {
+export function getChartTicks(options?: { color?: string; size?: number; family?: string }) {
   return {
     color: options?.color ?? getChartTextColor(),
     font: getChartFont(options?.size, options?.family),

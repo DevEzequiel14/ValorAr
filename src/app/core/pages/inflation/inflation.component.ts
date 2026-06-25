@@ -1,13 +1,17 @@
 import { InflacionService } from './../../services/inflacion.service';
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IndiceInflacion } from '../../models/indice-inflacion';
 import { BaseChartDirective } from 'ng2-charts';
-import {
-  ChartOptions,
-  ChartConfiguration,
-} from 'chart.js';
+import { ChartOptions, ChartConfiguration } from 'chart.js';
 import { NgFor, NgIf } from '@angular/common';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
@@ -31,17 +35,20 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
-      state('void', style({
-        transform: 'scale(0.5)', opacity: 0
-      })),
+      state(
+        'void',
+        style({
+          transform: 'scale(0.5)',
+          opacity: 0,
+        })
+      ),
       transition(':enter', [
-        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 }))
-      ])
-    ])
-  ]
+        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class InflationComponent implements OnInit {
-
   private readonly inflationService = inject(InflacionService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
@@ -63,9 +70,9 @@ export class InflationComponent implements OnInit {
         borderColor: getAccentPrimaryColor(),
         backgroundColor: getBackgroundSecondaryColor(),
         fill: true,
-        tension: 0.4
-      }
-    ]
+        tension: 0.4,
+      },
+    ],
   };
 
   public lineChartOptions: ChartOptions<'line'> = {
@@ -88,23 +95,39 @@ export class InflationComponent implements OnInit {
   }
 
   populateAvailableYears(): void {
-    const years = this.indicesInflacion.map(data => new Date(data.fecha).getFullYear());
-    this.availableYears = [...Array.from(new Set(years)).sort((a, b) => (a - b)).reverse()];
-    this.selectedYear = Math.max(...this.availableYears)
+    const years = this.indicesInflacion.map((data) => new Date(data.fecha).getFullYear());
+    this.availableYears = [
+      ...Array.from(new Set(years))
+        .sort((a, b) => a - b)
+        .reverse(),
+    ];
+    this.selectedYear = Math.max(...this.availableYears);
   }
 
   filterByYear(): void {
     const filteredData = this.indicesInflacion.filter(
-      data => new Date(data.fecha).getFullYear() == this.selectedYear
+      (data) => new Date(data.fecha).getFullYear() == this.selectedYear
     );
-    const lastMonthWithData = Math.max(...filteredData.map(data => new Date(data.fecha).getMonth()));
+    const lastMonthWithData = Math.max(
+      ...filteredData.map((data) => new Date(data.fecha).getMonth())
+    );
     const allLabels = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
     const labels = allLabels.slice(0, lastMonthWithData + 1);
     const values = new Array(lastMonthWithData + 1).fill(0);
-    filteredData.forEach(data => {
+    filteredData.forEach((data) => {
       const month = new Date(data.fecha).getMonth();
       values[month] = data.valor;
     });
@@ -118,44 +141,44 @@ export class InflationComponent implements OnInit {
           backgroundColor: getBackgroundSecondaryColor(),
           fill: true,
           tension: 0.4,
-        }
-      ]
+        },
+      ],
     };
     this.loading = false;
   }
-
 
   fetchInflacion(): void {
     this.loading = true;
     this.errorMessage = null;
     this.isEmpty = false;
 
-    this.inflationService.getInflacion().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (data) => {
-        this.loading = false;
-        if (data.length === 0) {
-          this.isEmpty = true;
+    this.inflationService
+      .getInflacion()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.loading = false;
+          if (data.length === 0) {
+            this.isEmpty = true;
+            this.cdr.markForCheck();
+            return;
+          }
+          this.indicesInflacion = [...data];
+          this.populateAvailableYears();
+          this.filterByYear();
           this.cdr.markForCheck();
-          return;
-        }
-        this.indicesInflacion = [...data];
-        this.populateAvailableYears();
-        this.filterByYear();
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = this.resolveErrorMessage(err);
-        this.cdr.markForCheck();
-      }
-    });
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = this.resolveErrorMessage(err);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   populateChartData(indicesInflacion: IndiceInflacion[]): void {
-    const labels = indicesInflacion.map(i => i.fecha);
-    const values = indicesInflacion.map(i => i.valor);
+    const labels = indicesInflacion.map((i) => i.fecha);
+    const values = indicesInflacion.map((i) => i.valor);
     this.lineChartData = {
       labels,
       datasets: [
@@ -165,9 +188,9 @@ export class InflationComponent implements OnInit {
           borderColor: getAccentPrimaryColor(),
           backgroundColor: getBackgroundSecondaryColor(),
           fill: true,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     };
   }
 

@@ -5,13 +5,14 @@ import { environment } from '../../../env/environment';
 import { IndiceInflacion } from '../models/indice-inflacion';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class InflacionService {
-
-  http = inject(HttpClient)
+  http = inject(HttpClient);
 
   getInflacion(): Observable<IndiceInflacion[]> {
-    return this.http.get<IndiceInflacion[]>(environment.argentinaData + '/finanzas/indices/inflacion')
+    return this.http.get<IndiceInflacion[]>(
+      environment.argentinaData + '/finanzas/indices/inflacion'
+    );
   }
 }

@@ -1,5 +1,5 @@
-@import "../../../../../styles/variables";
-@import "../../../../../styles/mixins";
+@import '../../../../../styles/variables';
+@import '../../../../../styles/mixins';
 
 .nav-links {
   display: flex;
@@ -38,7 +38,7 @@
       transition: $transition-standard;
 
       &::before {
-        content: "";
+        content: '';
         position: absolute;
         bottom: 0;
         left: 0;

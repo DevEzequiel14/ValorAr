@@ -19,14 +19,9 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-select-search',
   standalone: true,
-  imports: [
-    NgIf,
-    NgClass,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
+  imports: [NgIf, NgClass, FormsModule, ReactiveFormsModule],
   templateUrl: './select-search.component.html',
-  styleUrl: './select-search.component.scss'
+  styleUrl: './select-search.component.scss',
 })
 export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
   private static instanceCounter = 0;
@@ -46,7 +41,7 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
   readonly listboxId = `select-search-listbox-${this.instanceSuffix}`;
   readonly labelId = `select-search-label-${this.instanceSuffix}`;
 
-  constructor(private readonly elementRef: ElementRef) { }
+  constructor(private readonly elementRef: ElementRef) {}
 
   ngOnInit(): void {
     this.syncItemsState();
@@ -88,9 +83,7 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
 
   filterItems(query: string | null): void {
     const normalizedQuery = query?.toLowerCase() ?? '';
-    this.filteredItems = this.items.filter(item =>
-      item.toLowerCase().includes(normalizedQuery)
-    );
+    this.filteredItems = this.items.filter((item) => item.toLowerCase().includes(normalizedQuery));
   }
 
   search(event: KeyboardEvent): void {
@@ -112,9 +105,7 @@ export class SelectSearchComponent implements OnInit, OnChanges, AfterViewInit {
     const selectedElement = this.optionElements.find(
       (el) => el.nativeElement.getAttribute('data-value') === selected
     );
-    selectedElement?.nativeElement.scrollIntoView(
-      { behavior: 'smooth', block: 'center' }
-    );
+    selectedElement?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   handleKeyDown(event: KeyboardEvent): void {

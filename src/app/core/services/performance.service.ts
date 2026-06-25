@@ -5,13 +5,12 @@ import { environment } from '../../../env/environment';
 import { Performance } from '../models/performance';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PerformanceService {
-
-  http = inject(HttpClient)
+  http = inject(HttpClient);
 
   getPerformance(): Observable<Performance[]> {
-    return this.http.get<Performance[]>(environment.argentinaData + '/finanzas/rendimientos')
+    return this.http.get<Performance[]>(environment.argentinaData + '/finanzas/rendimientos');
   }
 }

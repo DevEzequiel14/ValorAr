@@ -5,19 +5,18 @@ import { Dollar } from '../models/dollar';
 import { environment } from '../../../env/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DollarService {
+  constructor() {}
 
-  constructor() { }
-
-  http = inject(HttpClient)
+  http = inject(HttpClient);
 
   /**
    * Devuelve un Observable con la lista de cotizaciones de dolares
    * en todas las casas de cambio.
    */
   getDollars(): Observable<Dollar[]> {
-    return this.http.get<Dollar[]>(environment.dollar + '/dolares')
+    return this.http.get<Dollar[]>(environment.dollar + '/dolares');
   }
 }

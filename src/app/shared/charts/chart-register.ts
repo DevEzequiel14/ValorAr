@@ -29,7 +29,7 @@ export function registerChartJs(): void {
     LineController,
     LineElement,
     PointElement,
-    Title,
+    Title
   );
 
   chartJsRegistered = true;

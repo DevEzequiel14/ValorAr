@@ -1,23 +1,21 @@
 import { NgIf } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { FixedTermDepositService } from './../../services/fixed-term-deposit.service';
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FixedTermDeposit } from '../../models/fixed-term-deposit';
-import {
-  ChartOptions,
-  ChartConfiguration,
-} from 'chart.js';
+import { ChartOptions, ChartConfiguration } from 'chart.js';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
   getAccentPrimaryColor,
   getAccentSecondaryColor,
@@ -44,10 +42,7 @@ import {
         })
       ),
       transition(':enter', [
-        animate(
-          '400ms ease-in-out',
-          style({ transform: 'scale(1)', opacity: 1 })
-        ),
+        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 })),
       ]),
     ]),
   ],
@@ -109,25 +104,26 @@ export class FixedTermDepositComponent implements OnInit {
     this.errorMessage = null;
     this.isEmpty = false;
 
-    this.fixedTermDepositService.getPlazoFijo().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (data) => {
-        this.loading = false;
-        if (data.length === 0) {
-          this.isEmpty = true;
+    this.fixedTermDepositService
+      .getPlazoFijo()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.loading = false;
+          if (data.length === 0) {
+            this.isEmpty = true;
+            this.cdr.markForCheck();
+            return;
+          }
+          this.loadData(data);
           this.cdr.markForCheck();
-          return;
-        }
-        this.loadData(data);
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.errorMessage = this.resolveErrorMessage(err);
-        this.cdr.markForCheck();
-      },
-    });
+        },
+        error: (err) => {
+          this.loading = false;
+          this.errorMessage = this.resolveErrorMessage(err);
+          this.cdr.markForCheck();
+        },
+      });
   }
 
   loadData(data: FixedTermDeposit[]): void {

@@ -24,11 +24,7 @@ describe('FixedTermDepositComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FixedTermDepositComponent],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideNoopAnimations(),
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FixedTermDepositComponent);

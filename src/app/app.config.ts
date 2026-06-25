@@ -10,10 +10,5 @@ import { registerChartJs } from './shared/charts/chart-register';
 registerChartJs();
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideHttpClient(),
-    provideAnimations(),
-    provideCharts()
-  ]
+  providers: [provideRouter(routes), provideHttpClient(), provideAnimations(), provideCharts()],
 };

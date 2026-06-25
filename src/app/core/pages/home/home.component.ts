@@ -1,5 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import { DollarService } from '../../services/dollar.service';
@@ -21,14 +28,18 @@ interface HubCard {
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('scaleFadeIn', [
-      state('void', style({
-        transform: 'scale(0.5)', opacity: 0
-      })),
+      state(
+        'void',
+        style({
+          transform: 'scale(0.5)',
+          opacity: 0,
+        })
+      ),
       transition(':enter', [
-        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 }))
-      ])
-    ])
-  ]
+        animate('400ms ease-in-out', style({ transform: 'scale(1)', opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class HomeComponent implements OnInit {
   readonly hubCards: HubCard[] = [
@@ -73,22 +84,21 @@ export class HomeComponent implements OnInit {
   }
 
   private loadBluePreview(): void {
-    this.dollarService.getDollars().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (data) => {
-        const blue = data.find(
-          (d) => d.casa === 'blue' || d.nombre.toLowerCase() === 'blue'
-        );
-        if (!blue) {
-          return;
-        }
-        this.bluePreview = `Blue: $${blue.venta.toLocaleString('es-AR')}`;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        // La card se muestra sin preview si falla el fetch
-      },
-    });
+    this.dollarService
+      .getDollars()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          const blue = data.find((d) => d.casa === 'blue' || d.nombre.toLowerCase() === 'blue');
+          if (!blue) {
+            return;
+          }
+          this.bluePreview = `Blue: $${blue.venta.toLocaleString('es-AR')}`;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          // La card se muestra sin preview si falla el fetch
+        },
+      });
   }
 }

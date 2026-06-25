@@ -28,11 +28,7 @@ describe('InflationComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [InflationComponent],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideNoopAnimations(),
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InflationComponent);
@@ -73,17 +69,14 @@ describe('InflationComponent', () => {
     expect(component.selectedYear).toBe(2024);
     expect(component.lineChartData.labels).toEqual(['Enero', 'Febrero']);
     expect(component.lineChartData.datasets?.[0]?.data).toEqual([20.6, 13.2]);
-    expect(component.lineChartData.datasets?.[0]?.label).toBe(
-      'Índice de Inflación (2024)'
-    );
+    expect(component.lineChartData.datasets?.[0]?.label).toBe('Índice de Inflación (2024)');
   });
 
   it('should update lineChartData when filtering by another year', () => {
     initComponent();
     flushSuccess();
 
-    const select: HTMLSelectElement =
-      fixture.nativeElement.querySelector('#year');
+    const select: HTMLSelectElement = fixture.nativeElement.querySelector('#year');
     select.value = '2023';
     select.dispatchEvent(new Event('change'));
     fixture.detectChanges();
@@ -97,17 +90,8 @@ describe('InflationComponent', () => {
       'Mayo',
       'Junio',
     ]);
-    expect(component.lineChartData.datasets?.[0]?.data).toEqual([
-      0,
-      0,
-      0,
-      0,
-      0,
-      5.0,
-    ]);
-    expect(component.lineChartData.datasets?.[0]?.label).toBe(
-      'Índice de Inflación (2023)'
-    );
+    expect(component.lineChartData.datasets?.[0]?.data).toEqual([0, 0, 0, 0, 0, 5.0]);
+    expect(component.lineChartData.datasets?.[0]?.label).toBe('Índice de Inflación (2023)');
   });
 
   it('should set isEmpty when response is an empty array', () => {
@@ -122,9 +106,7 @@ describe('InflationComponent', () => {
 
   it('should set errorMessage on HTTP error', () => {
     initComponent();
-    httpMock
-      .expectOne(apiUrl)
-      .flush('Error', { status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
@@ -137,9 +119,7 @@ describe('InflationComponent', () => {
 
   it('should retry fetch when StateMessage emits retry', () => {
     initComponent();
-    httpMock
-      .expectOne(apiUrl)
-      .flush('Error', { status: 500, statusText: 'Server Error' });
+    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
 
     const retryButton: HTMLButtonElement | null =

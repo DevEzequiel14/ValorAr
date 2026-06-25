@@ -12,7 +12,7 @@ describe('DollarService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [DollarService]
+      providers: [DollarService],
     });
     service = TestBed.inject(DollarService);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -29,20 +29,20 @@ describe('DollarService', () => {
   it('should fetch a list of dollars via getDollars', () => {
     const mockResponse: Dollar[] = [
       {
-        "moneda": "USD",
-        "casa": "oficial",
-        "nombre": "Oficial",
-        "compra": 995,
-        "venta": 1035,
-        "fechaActualizacion": "2024-12-06T13:36:00.000Z"
+        moneda: 'USD',
+        casa: 'oficial',
+        nombre: 'Oficial',
+        compra: 995,
+        venta: 1035,
+        fechaActualizacion: '2024-12-06T13:36:00.000Z',
       },
       {
-        "moneda": "USD",
-        "casa": "blue",
-        "nombre": "Blue",
-        "compra": 1030,
-        "venta": 1050,
-        "fechaActualizacion": "2024-12-06T16:56:00.000Z"
+        moneda: 'USD',
+        casa: 'blue',
+        nombre: 'Blue',
+        compra: 1030,
+        venta: 1050,
+        fechaActualizacion: '2024-12-06T16:56:00.000Z',
       },
     ];
 
@@ -64,10 +64,9 @@ describe('DollarService', () => {
       error: (error) => {
         expect(error.status).toBe(500);
         expect(error.statusText).toBe('Internal Server Error');
-      }
-    })
+      },
+    });
     const req = httpTestingController.expectOne(environment.dollar + '/dolares');
     req.flush(null, mockError);
   });
-
 });

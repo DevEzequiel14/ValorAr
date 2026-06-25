@@ -5,13 +5,14 @@ import { environment } from '../../../env/environment';
 import { FixedTermDeposit } from '../models/fixed-term-deposit';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FixedTermDepositService {
-
-  http = inject(HttpClient)
+  http = inject(HttpClient);
 
   getPlazoFijo(): Observable<FixedTermDeposit[]> {
-    return this.http.get<FixedTermDeposit[]>(environment.argentinaData + '/finanzas/tasas/plazoFijo')
+    return this.http.get<FixedTermDeposit[]>(
+      environment.argentinaData + '/finanzas/tasas/plazoFijo'
+    );
   }
 }

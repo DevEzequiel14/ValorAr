@@ -21,11 +21,11 @@
     [title]="'Selecciona una moneda:'"
     [items]="availableCurrencies"
     [selectedItem]="selectedCurrency"
-    (selectionChange)="onCurrencyChange($event)">
+    (selectionChange)="onCurrencyChange($event)"
+  >
   </app-select-search>
   <div class="chart-container" @scaleFadeIn>
-    <canvas baseChart [data]="barChartData" [options]="barChartOptions"
-            [type]="barChartType">
+    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
     </canvas>
   </div>
 </ng-container>

@@ -1,4 +1,4 @@
 export interface IndiceInflacion {
-  fecha: string,
-  valor: number,
+  fecha: string;
+  valor: number;
 }
