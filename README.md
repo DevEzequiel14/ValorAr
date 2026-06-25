@@ -65,9 +65,15 @@ La app queda disponible en `http://localhost:4200/`.
 
 ## Deploy en Netlify
 
-El proyecto se despliega en Netlify con build command `npm run build` y publish directory `dist/dolar-api`.
+La configuración de build está documentada en [`netlify.toml`](netlify.toml) en la raíz del repositorio:
 
-Para el enrutamiento SPA y compatibilidad con URLs antiguas, `src/_redirects` se incluye como asset en el build:
+- **Build command:** `npm run build`
+- **Publish directory:** `dist/dolar-api`
+- **Node.js:** 20 (`NODE_VERSION`, con `NETLIFY_USE_NPM` para usar npm)
+
+Netlify detecta ese archivo automáticamente al conectar el repo; no hace falta repetir esos valores en el panel.
+
+Para el enrutamiento SPA y compatibilidad con URLs antiguas, `src/_redirects` se incluye como asset en `angular.json` y se copia al build (no se duplica en `netlify.toml`):
 
 ```
 /TNA    /plazo-fijo    301
