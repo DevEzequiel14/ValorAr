@@ -59,7 +59,7 @@ La app queda disponible en `http://localhost:4200/`.
 | Comando | Descripción |
 |---|---|
 | `npm start` | Servidor de desarrollo (`ng serve`) |
-| `npm run build` | Build de producción en `dist/dolar-api` |
+| `npm run build` | Build de producción en `dist/valor-ar` |
 | `npm test` | Tests unitarios con Karma/Jasmine |
 | `npm run lint` | Análisis estático con ESLint |
 
@@ -68,7 +68,7 @@ La app queda disponible en `http://localhost:4200/`.
 La configuración de build está documentada en [`netlify.toml`](netlify.toml) en la raíz del repositorio:
 
 - **Build command:** `npm run build`
-- **Publish directory:** `dist/dolar-api`
+- **Publish directory:** `dist/valor-ar`
 - **Node.js:** 20 (`NODE_VERSION`, con `NETLIFY_USE_NPM` para usar npm)
 
 Netlify detecta ese archivo automáticamente al conectar el repo; no hace falta repetir esos valores en el panel.
