@@ -2,7 +2,7 @@
 
 Aplicación web para consultar indicadores financieros de Argentina con gráficos interactivos. Centraliza cotizaciones del dólar, evolución de la inflación, tasas de plazo fijo y rendimientos APY por entidad, con datos obtenidos de APIs públicas.
 
-**Demo:** [valorar.netlify.app](https://valorar.netlify.app/)
+**Demo:** [valorar.netlify.app](https://valorar.netlify.app/) · [![CI](https://github.com/DevEzequiel14/ValorAr/actions/workflows/ci.yml/badge.svg)](https://github.com/DevEzequiel14/ValorAr/actions/workflows/ci.yml)
 
 ## Objetivo
 
