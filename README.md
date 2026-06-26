@@ -18,6 +18,7 @@ Ofrecer una interfaz clara y responsive para explorar información económica re
 | **Chart.js** | Gráficos de barras y líneas |
 | **ng2-charts** | Integración de Chart.js con Angular |
 | **SCSS** | Estilos con variables y mixins compartidos |
+| **Playwright** | Tests end-to-end del flujo principal |
 
 ## APIs consumidas
 
@@ -60,10 +61,12 @@ La app queda disponible en `http://localhost:4200/`.
 |---|---|
 | `npm start` | Servidor de desarrollo (`ng serve`) |
 | `npm run build` | Build de producción en `dist/valor-ar` |
-| `npm test` | Tests unitarios con Karma/Jasmine |
+| `npm test` | Tests unitarios con Karma/Jasmine (modo watch) |
+| `npm run test:ci` | Tests unitarios headless con coverage (`ChromeHeadless`) |
 | `npm run e2e` | Tests end-to-end con Playwright (levanta `ng serve` en el puerto 4201) |
 | `npm run e2e:ci` | Igual que `e2e`, usado en CI con `CI=true` (GitHub Actions) |
 | `npm run lint` | Análisis estático con ESLint |
+| `npm run format:check` | Verificación de formato con Prettier |
 
 ## Deploy en Netlify
 
@@ -87,11 +90,17 @@ Para el enrutamiento SPA y compatibilidad con URLs antiguas, `src/_redirects` se
 
 ## Decisiones técnicas
 
-- **Lazy loading:** cada página se carga bajo demanda con `loadComponent`, reduciendo el bundle inicial.
+- **Arquitectura por capas:** `src/app/features/` (páginas por dominio), `src/app/core/` (layout, servicios, modelos, interceptors) y `src/app/shared/` (componentes y utilidades reutilizables).
+- **Lazy loading:** cada feature se carga bajo demanda con `loadComponent`, reduciendo el bundle inicial.
 - **Standalone components:** sin NgModules; cada componente declara sus propias dependencias.
-- **Una ruta por feature:** cada indicador financiero tiene su propia ruta, componente, servicio y modelo, lo que facilita mantener y extender el proyecto.
+- **Una ruta por feature:** cada indicador financiero tiene su propia ruta, componente, servicio y modelo.
+- **OnPush en smart components:** detección de cambios optimizada en las pantallas que consumen APIs.
+- **Signals (piloto):** estado de UI (`loading`, `error`, `isEmpty`) con signals en `features/dollars/`; el resto de features mantiene el patrón clásico con `markForCheck`.
+- **Interceptor HTTP:** `http-error.interceptor` registra errores de red/5xx en desarrollo; los features siguen manejando mensajes de error en la UI.
 - **Registro centralizado de Chart.js:** configuración y tema de gráficos compartidos en `src/app/shared/charts/`.
-- **Manejo de estados de UI:** loading, error y datos vacíos con un componente reutilizable (`state-message`).
+- **Manejo de estados de UI:** loading, error y datos vacíos con `StateMessageComponent`.
+- **CI en GitHub Actions:** lint, Prettier (`format:check`), tests unitarios con coverage (`test:ci`), build de producción y E2E con Playwright (`e2e:ci`). Ver [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+- **Tests E2E:** flujo home → dólares → gráfico mockeado en [`e2e/dollars.spec.ts`](e2e/dollars.spec.ts) (Playwright + `playwright.config.ts`).
 
 ## Autor
 
