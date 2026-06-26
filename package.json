@@ -11,7 +11,8 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "format": "prettier --write \"src/**/*.{ts,html,scss,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,scss,json}\""
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss,json}\"",
+    "e2e": "playwright test"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +40,7 @@
     "@angular-eslint/template-parser": "17.5.3",
     "@angular/cli": "^17.3.10",
     "@angular/compiler-cli": "^17.3.0",
+    "@playwright/test": "^1.49.1",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "7.11.0",
     "@typescript-eslint/parser": "7.11.0",

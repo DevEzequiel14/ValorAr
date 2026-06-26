@@ -61,6 +61,7 @@ La app queda disponible en `http://localhost:4200/`.
 | `npm start` | Servidor de desarrollo (`ng serve`) |
 | `npm run build` | Build de producción en `dist/valor-ar` |
 | `npm test` | Tests unitarios con Karma/Jasmine |
+| `npm run e2e` | Tests end-to-end con Playwright (levanta `ng serve` en el puerto 4201) |
 | `npm run lint` | Análisis estático con ESLint |
 
 ## Deploy en Netlify
