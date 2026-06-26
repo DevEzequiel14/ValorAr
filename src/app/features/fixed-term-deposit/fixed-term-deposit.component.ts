@@ -1,6 +1,6 @@
 import { NgIf } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
-import { FixedTermDepositService } from './../../services/fixed-term-deposit.service';
+import { FixedTermDepositService } from '../../core/services/fixed-term-deposit.service';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -11,10 +11,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FixedTermDeposit } from '../../models/fixed-term-deposit';
+import { FixedTermDeposit } from '../../core/models/fixed-term-deposit';
 import { ChartOptions, ChartConfiguration } from 'chart.js';
-import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../shared/components/state-message/state-message.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
   getAccentPrimaryColor,
@@ -23,7 +23,7 @@ import {
   getChartPlugins,
   getChartScaleTitle,
   getChartTextColor,
-} from '../../../shared/charts/chart-theme';
+} from '../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-fixed-term-deposit',

@@ -1,8 +1,14 @@
-@import '../../../../styles/variables';
+@import '../../../styles/variables';
 
-.fixed-title {
-  margin-bottom: 2rem;
+.dollars-title {
+  margin-bottom: $spacing-small;
   color: $color-text-primary;
+}
+
+.dollars-updated {
+  margin-bottom: $spacing-large;
+  color: $color-text-secondary;
+  font-size: $font-size-small;
 }
 
 .chart-container {

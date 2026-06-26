@@ -1,5 +1,5 @@
-@import '../../../../styles/variables';
-@import '../../../../styles/mixins';
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
 
 .select-container {
   @include flex-center(row, start, center);

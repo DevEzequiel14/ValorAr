@@ -1,4 +1,4 @@
-import { PerformanceService } from './../../services/performance.service';
+import { PerformanceService } from '../../core/services/performance.service';
 import { NgIf } from '@angular/common';
 import {
   Component,
@@ -10,21 +10,21 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartOptions, ChartConfiguration } from 'chart.js';
-import { Performance } from '../../models/performance';
+import { Performance } from '../../core/models/performance';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
-import { SelectSearchComponent } from '../../../shared/components/select-search/select-search.component';
+import { SelectSearchComponent } from '../../shared/components/select-search/select-search.component';
 import {
   getAccentPrimaryColor,
   getChartBaseOptions,
   getChartPlugins,
   getChartScaleTitle,
   getChartTicks,
-} from '../../../shared/charts/chart-theme';
+} from '../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-performance',

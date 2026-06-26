@@ -1,4 +1,4 @@
-import { InflacionService } from './../../services/inflacion.service';
+import { InflacionService } from '../../core/services/inflacion.service';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { IndiceInflacion } from '../../models/indice-inflacion';
+import { IndiceInflacion } from '../../core/models/indice-inflacion';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartOptions, ChartConfiguration } from 'chart.js';
 import { NgFor, NgIf } from '@angular/common';
-import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../shared/components/state-message/state-message.component';
 import { FormsModule } from '@angular/forms';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
@@ -24,7 +24,7 @@ import {
   getChartPlugins,
   getChartScaleTitle,
   getChartTicks,
-} from '../../../shared/charts/chart-theme';
+} from '../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-inflation',

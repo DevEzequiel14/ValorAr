@@ -5,7 +5,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { HomeComponent } from './home.component';
-import { environment } from '../../../../env/environment';
+import { environment } from '../../../env/environment';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;

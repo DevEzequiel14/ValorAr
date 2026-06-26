@@ -3,27 +3,22 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { DollarsComponent } from './dollars.component';
-import { environment } from '../../../../env/environment';
-import { Dollar } from '../../models/dollar';
-import { registerChartJs } from '../../../shared/charts/chart-register';
+import { InflationComponent } from './inflation.component';
+import { environment } from '../../../env/environment';
+import { IndiceInflacion } from '../../core/models/indice-inflacion';
+import { registerChartJs } from '../../shared/charts/chart-register';
 
-describe('DollarsComponent', () => {
-  let component: DollarsComponent;
-  let fixture: ComponentFixture<DollarsComponent>;
+describe('InflationComponent', () => {
+  let component: InflationComponent;
+  let fixture: ComponentFixture<InflationComponent>;
   let httpMock: HttpTestingController;
 
-  const apiUrl = environment.dollar + '/dolares';
+  const apiUrl = environment.argentinaData + '/finanzas/indices/inflacion';
 
-  const mockDollars: Dollar[] = [
-    {
-      moneda: 'USD',
-      casa: 'oficial',
-      nombre: 'Oficial',
-      compra: 995,
-      venta: 1035,
-      fechaActualizacion: '2024-12-06T13:36:00.000Z',
-    },
+  const mockInflacion: IndiceInflacion[] = [
+    { fecha: '2023-06-15T12:00:00.000Z', valor: 5.0 },
+    { fecha: '2024-01-15T12:00:00.000Z', valor: 20.6 },
+    { fecha: '2024-02-15T12:00:00.000Z', valor: 13.2 },
   ];
 
   beforeAll(() => {
@@ -32,11 +27,11 @@ describe('DollarsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DollarsComponent],
+      imports: [InflationComponent],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DollarsComponent);
+    fixture = TestBed.createComponent(InflationComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -49,12 +44,10 @@ describe('DollarsComponent', () => {
     fixture.detectChanges();
   }
 
-  it('should create', () => {
-    initComponent();
-    httpMock.expectOne(apiUrl).flush(mockDollars);
+  function flushSuccess(data: IndiceInflacion[] = mockInflacion): void {
+    httpMock.expectOne(apiUrl).flush(data);
     fixture.detectChanges();
-    expect(component).toBeTruthy();
-  });
+  }
 
   it('should show loading while request is pending', () => {
     initComponent();
@@ -62,28 +55,48 @@ describe('DollarsComponent', () => {
     expect(component.loading).toBe(true);
     expect(fixture.nativeElement.querySelector('app-loading')).toBeTruthy();
 
-    httpMock.expectOne(apiUrl).flush(mockDollars);
+    httpMock.expectOne(apiUrl).flush(mockInflacion);
   });
 
-  it('should set chart data after successful response', () => {
+  it('should populate lineChartData for the latest year after fetch', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush(mockDollars);
-    fixture.detectChanges();
+    flushSuccess();
 
     expect(component.loading).toBe(false);
     expect(component.isEmpty).toBe(false);
     expect(component.errorMessage).toBeNull();
-    expect(component.barChartData.labels).toEqual(['Oficial']);
-    expect(component.barChartData.datasets?.[0]?.data).toEqual([995]);
-    expect(component.barChartData.datasets?.[1]?.data).toEqual([1035]);
-    expect(component.barChartData.datasets?.[0]?.label).toBe('Compra');
-    expect(component.barChartData.datasets?.[1]?.label).toBe('Venta');
+    expect(component.availableYears).toEqual([2024, 2023]);
+    expect(component.selectedYear).toBe(2024);
+    expect(component.lineChartData.labels).toEqual(['Enero', 'Febrero']);
+    expect(component.lineChartData.datasets?.[0]?.data).toEqual([20.6, 13.2]);
+    expect(component.lineChartData.datasets?.[0]?.label).toBe('Índice de Inflación (2024)');
+  });
+
+  it('should update lineChartData when filtering by another year', () => {
+    initComponent();
+    flushSuccess();
+
+    const select: HTMLSelectElement = fixture.nativeElement.querySelector('#year');
+    select.value = '2023';
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(String(component.selectedYear)).toBe('2023');
+    expect(component.lineChartData.labels).toEqual([
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+    ]);
+    expect(component.lineChartData.datasets?.[0]?.data).toEqual([0, 0, 0, 0, 0, 5.0]);
+    expect(component.lineChartData.datasets?.[0]?.label).toBe('Índice de Inflación (2023)');
   });
 
   it('should set isEmpty when response is an empty array', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush([]);
-    fixture.detectChanges();
+    flushSuccess([]);
 
     expect(component.loading).toBe(false);
     expect(component.isEmpty).toBe(true);
@@ -98,7 +111,9 @@ describe('DollarsComponent', () => {
 
     expect(component.loading).toBe(false);
     expect(component.isEmpty).toBe(false);
-    expect(component.errorMessage).toBe('No se pudieron cargar las cotizaciones (error 500).');
+    expect(component.errorMessage).toBe(
+      'No se pudieron cargar los datos de inflación (error 500).'
+    );
     expect(fixture.nativeElement.querySelector('.state-message--error')).toBeTruthy();
   });
 
@@ -115,12 +130,12 @@ describe('DollarsComponent', () => {
 
     expect(component.loading).toBe(true);
 
-    httpMock.expectOne(apiUrl).flush(mockDollars);
+    httpMock.expectOne(apiUrl).flush(mockInflacion);
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
     expect(component.errorMessage).toBeNull();
     expect(component.isEmpty).toBe(false);
-    expect(component.barChartData.labels).toEqual(['Oficial']);
+    expect(component.lineChartData.datasets?.[0]?.data).toEqual([20.6, 13.2]);
   });
 });

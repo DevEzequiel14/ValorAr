@@ -8,22 +8,22 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { StateMessageComponent } from '../../../shared/components/state-message/state-message.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { StateMessageComponent } from '../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
 import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { ChartOptions, ChartConfiguration } from 'chart.js';
-import { Dollar } from '../../models/dollar';
-import { DollarService } from '../../services/dollar.service';
+import { Dollar } from '../../core/models/dollar';
+import { DollarService } from '../../core/services/dollar.service';
 import {
   getAccentPrimaryColor,
   getAccentSecondaryColor,
   getChartBaseOptions,
   getChartPlugins,
   getChartTicks,
-} from '../../../shared/charts/chart-theme';
+} from '../../shared/charts/chart-theme';
 
 @Component({
   selector: 'app-dollars',

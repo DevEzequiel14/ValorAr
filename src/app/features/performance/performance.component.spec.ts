@@ -4,9 +4,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PerformanceComponent } from './performance.component';
-import { environment } from '../../../../env/environment';
-import { Performance } from '../../models/performance';
-import { registerChartJs } from '../../../shared/charts/chart-register';
+import { environment } from '../../../env/environment';
+import { Performance } from '../../core/models/performance';
+import { registerChartJs } from '../../shared/charts/chart-register';
 
 describe('PerformanceComponent', () => {
   let component: PerformanceComponent;

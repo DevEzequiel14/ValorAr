@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
-import { DollarService } from '../../services/dollar.service';
+import { DollarService } from '../../core/services/dollar.service';
 
 interface HubCard {
   iconSrc: string;

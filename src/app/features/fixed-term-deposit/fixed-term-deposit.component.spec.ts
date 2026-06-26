@@ -4,8 +4,8 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { FixedTermDepositComponent } from './fixed-term-deposit.component';
-import { environment } from '../../../../env/environment';
-import { FixedTermDeposit } from '../../models/fixed-term-deposit';
+import { environment } from '../../../env/environment';
+import { FixedTermDeposit } from '../../core/models/fixed-term-deposit';
 
 describe('FixedTermDepositComponent', () => {
   let component: FixedTermDepositComponent;
