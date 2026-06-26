@@ -42,7 +42,7 @@ Ofrecer una interfaz clara y responsive para explorar información económica re
 
 ## Capturas
 
-![ValorAr — vista principal](https://github.com/user-attachments/assets/3f5e782d-86cc-4e7b-ba5a-274fe69dba67)
+![ValorAr — vista principal](/src/assets/img/ValorAr.webp)
 
 ## Instalación
 
