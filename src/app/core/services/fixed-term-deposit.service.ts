@@ -8,7 +8,7 @@ import { FixedTermDeposit } from '../models/fixed-term-deposit';
   providedIn: 'root',
 })
 export class FixedTermDepositService {
-  http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   getPlazoFijo(): Observable<FixedTermDeposit[]> {
     return this.http.get<FixedTermDeposit[]>(

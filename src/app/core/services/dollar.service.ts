@@ -8,9 +8,7 @@ import { environment } from '../../../env/environment';
   providedIn: 'root',
 })
 export class DollarService {
-  constructor() {}
-
-  http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   /**
    * Devuelve un Observable con la lista de cotizaciones de dolares

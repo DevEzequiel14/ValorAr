@@ -8,7 +8,7 @@ import { IndiceInflacion } from '../models/indice-inflacion';
   providedIn: 'root',
 })
 export class InflacionService {
-  http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   getInflacion(): Observable<IndiceInflacion[]> {
     return this.http.get<IndiceInflacion[]>(

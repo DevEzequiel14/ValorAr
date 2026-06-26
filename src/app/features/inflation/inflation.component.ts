@@ -176,24 +176,6 @@ export class InflationComponent implements OnInit {
       });
   }
 
-  populateChartData(indicesInflacion: IndiceInflacion[]): void {
-    const labels = indicesInflacion.map((i) => i.fecha);
-    const values = indicesInflacion.map((i) => i.valor);
-    this.lineChartData = {
-      labels,
-      datasets: [
-        {
-          data: values,
-          label: 'Índice de Inflación',
-          borderColor: getAccentPrimaryColor(),
-          backgroundColor: getBackgroundSecondaryColor(),
-          fill: true,
-          tension: 0.4,
-        },
-      ],
-    };
-  }
-
   private resolveErrorMessage(err: unknown): string {
     if (err instanceof HttpErrorResponse) {
       if (err.status === 0) {

@@ -8,7 +8,7 @@ import { Performance } from '../models/performance';
   providedIn: 'root',
 })
 export class PerformanceService {
-  http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   getPerformance(): Observable<Performance[]> {
     return this.http.get<Performance[]>(environment.argentinaData + '/finanzas/rendimientos');
