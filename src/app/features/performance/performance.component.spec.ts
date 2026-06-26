@@ -6,7 +6,6 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PerformanceComponent } from './performance.component';
 import { environment } from '../../../env/environment';
 import { Performance } from '../../core/models/performance';
-import { registerChartJs } from '../../shared/charts/chart-register';
 
 describe('PerformanceComponent', () => {
   let component: PerformanceComponent;
@@ -28,10 +27,6 @@ describe('PerformanceComponent', () => {
       rendimientos: [{ moneda: 'USD', apy: 4.1 }],
     },
   ];
-
-  beforeAll(() => {
-    registerChartJs();
-  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

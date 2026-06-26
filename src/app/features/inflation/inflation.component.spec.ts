@@ -6,7 +6,6 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { InflationComponent } from './inflation.component';
 import { environment } from '../../../env/environment';
 import { IndiceInflacion } from '../../core/models/indice-inflacion';
-import { registerChartJs } from '../../shared/charts/chart-register';
 
 describe('InflationComponent', () => {
   let component: InflationComponent;
@@ -20,10 +19,6 @@ describe('InflationComponent', () => {
     { fecha: '2024-01-15T12:00:00.000Z', valor: 20.6 },
     { fecha: '2024-02-15T12:00:00.000Z', valor: 13.2 },
   ];
-
-  beforeAll(() => {
-    registerChartJs();
-  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -6,7 +6,6 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FixedTermDepositComponent } from './fixed-term-deposit.component';
 import { environment } from '../../../env/environment';
 import { FixedTermDeposit } from '../../core/models/fixed-term-deposit';
-import { registerChartJs } from '../../shared/charts/chart-register';
 
 describe('FixedTermDepositComponent', () => {
   let component: FixedTermDepositComponent;
@@ -29,10 +28,6 @@ describe('FixedTermDepositComponent', () => {
       tnaNoClientes: 42,
     },
   ];
-
-  beforeAll(() => {
-    registerChartJs();
-  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -6,7 +6,6 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { DollarsComponent } from './dollars.component';
 import { environment } from '../../../env/environment';
 import { Dollar } from '../../core/models/dollar';
-import { registerChartJs } from '../../shared/charts/chart-register';
 
 describe('DollarsComponent', () => {
   let component: DollarsComponent;
@@ -25,10 +24,6 @@ describe('DollarsComponent', () => {
       fechaActualizacion: '2024-12-06T13:36:00.000Z',
     },
   ];
-
-  beforeAll(() => {
-    registerChartJs();
-  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
