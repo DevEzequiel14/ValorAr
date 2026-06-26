@@ -1,26 +1,32 @@
-<app-loading *ngIf="loading"></app-loading>
+@if (loading()) {
+  <app-loading></app-loading>
+}
 
-<app-state-message
-  *ngIf="!loading && errorMessage"
-  type="error"
-  [message]="errorMessage"
-  [showRetry]="true"
-  (retry)="fetchDolars()"
-></app-state-message>
+@if (!loading() && errorMessage()) {
+  <app-state-message
+    type="error"
+    [message]="errorMessage()!"
+    [showRetry]="true"
+    (retry)="fetchDolars()"
+  ></app-state-message>
+}
 
-<app-state-message
-  *ngIf="!loading && !errorMessage && isEmpty"
-  type="empty"
-  message="No hay cotizaciones disponibles en este momento."
-  [showRetry]="true"
-  (retry)="fetchDolars()"
-></app-state-message>
+@if (!loading() && !errorMessage() && isEmpty()) {
+  <app-state-message
+    type="empty"
+    message="No hay cotizaciones disponibles en este momento."
+    [showRetry]="true"
+    (retry)="fetchDolars()"
+  ></app-state-message>
+}
 
-<ng-container *ngIf="!loading && !errorMessage && !isEmpty">
+@if (!loading() && !errorMessage() && !isEmpty()) {
   <h2 class="dollars-title">Cotizaciones de todas las casas de cambio</h2>
-  <p *ngIf="lastUpdated" class="dollars-updated">{{ lastUpdated }}</p>
+  @if (lastUpdated) {
+    <p class="dollars-updated">{{ lastUpdated }}</p>
+  }
   <div class="chart-container" @scaleFadeIn>
     <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
     </canvas>
   </div>
-</ng-container>
+}

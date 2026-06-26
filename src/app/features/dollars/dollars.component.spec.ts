@@ -59,7 +59,7 @@ describe('DollarsComponent', () => {
   it('should show loading while request is pending', () => {
     initComponent();
 
-    expect(component.loading).toBe(true);
+    expect(component.loading()).toBe(true);
     expect(fixture.nativeElement.querySelector('app-loading')).toBeTruthy();
 
     httpMock.expectOne(apiUrl).flush(mockDollars);
@@ -70,9 +70,9 @@ describe('DollarsComponent', () => {
     httpMock.expectOne(apiUrl).flush(mockDollars);
     fixture.detectChanges();
 
-    expect(component.loading).toBe(false);
-    expect(component.isEmpty).toBe(false);
-    expect(component.errorMessage).toBeNull();
+    expect(component.loading()).toBe(false);
+    expect(component.isEmpty()).toBe(false);
+    expect(component.errorMessage()).toBeNull();
     expect(component.barChartData.labels).toEqual(['Oficial']);
     expect(component.barChartData.datasets?.[0]?.data).toEqual([995]);
     expect(component.barChartData.datasets?.[1]?.data).toEqual([1035]);
@@ -85,9 +85,9 @@ describe('DollarsComponent', () => {
     httpMock.expectOne(apiUrl).flush([]);
     fixture.detectChanges();
 
-    expect(component.loading).toBe(false);
-    expect(component.isEmpty).toBe(true);
-    expect(component.errorMessage).toBeNull();
+    expect(component.loading()).toBe(false);
+    expect(component.isEmpty()).toBe(true);
+    expect(component.errorMessage()).toBeNull();
     expect(fixture.nativeElement.querySelector('.state-message--empty')).toBeTruthy();
   });
 
@@ -96,9 +96,9 @@ describe('DollarsComponent', () => {
     httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
     fixture.detectChanges();
 
-    expect(component.loading).toBe(false);
-    expect(component.isEmpty).toBe(false);
-    expect(component.errorMessage).toBe('No se pudieron cargar las cotizaciones (error 500).');
+    expect(component.loading()).toBe(false);
+    expect(component.isEmpty()).toBe(false);
+    expect(component.errorMessage()).toBe('No se pudieron cargar las cotizaciones (error 500).');
     expect(fixture.nativeElement.querySelector('.state-message--error')).toBeTruthy();
   });
 
@@ -113,14 +113,14 @@ describe('DollarsComponent', () => {
     retryButton!.click();
     fixture.detectChanges();
 
-    expect(component.loading).toBe(true);
+    expect(component.loading()).toBe(true);
 
     httpMock.expectOne(apiUrl).flush(mockDollars);
     fixture.detectChanges();
 
-    expect(component.loading).toBe(false);
-    expect(component.errorMessage).toBeNull();
-    expect(component.isEmpty).toBe(false);
+    expect(component.loading()).toBe(false);
+    expect(component.errorMessage()).toBeNull();
+    expect(component.isEmpty()).toBe(false);
     expect(component.barChartData.labels).toEqual(['Oficial']);
   });
 });

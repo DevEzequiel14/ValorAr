@@ -1,17 +1,16 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { StateMessageComponent } from '../../shared/components/state-message/state-message.component';
 import { BaseChartDirective } from 'ng2-charts';
-import { CommonModule } from '@angular/common';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 import { ChartOptions, ChartConfiguration } from 'chart.js';
@@ -28,7 +27,7 @@ import {
 @Component({
   selector: 'app-dollars',
   standalone: true,
-  imports: [CommonModule, BaseChartDirective, LoadingComponent, StateMessageComponent],
+  imports: [BaseChartDirective, LoadingComponent, StateMessageComponent],
   templateUrl: './dollars.component.html',
   styleUrl: './dollars.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,9 +47,10 @@ import {
   ],
 })
 export class DollarsComponent implements OnInit {
-  loading = true;
-  errorMessage: string | null = null;
-  isEmpty = false;
+  readonly loading = signal(true);
+  readonly errorMessage = signal<string | null>(null);
+  readonly isEmpty = signal(false);
+
   dollars: Dollar[] = [];
   lastUpdated: string | null = null;
 
@@ -65,7 +65,6 @@ export class DollarsComponent implements OnInit {
 
   private readonly dollarService = inject(DollarService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly cdr = inject(ChangeDetectorRef);
 
   public barChartType = 'bar' as const;
   public barChartOptions: ChartOptions<'bar'> = {
@@ -94,9 +93,9 @@ export class DollarsComponent implements OnInit {
   }
 
   fetchDolars(): void {
-    this.loading = true;
-    this.errorMessage = null;
-    this.isEmpty = false;
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.isEmpty.set(false);
     this.lastUpdated = null;
 
     this.dollarService
@@ -104,21 +103,19 @@ export class DollarsComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.loading = false;
           if (data.length === 0) {
-            this.isEmpty = true;
-            this.cdr.markForCheck();
+            this.loading.set(false);
+            this.isEmpty.set(true);
             return;
           }
           this.dollars = [...data];
           this.updateChart(data);
           this.setLastUpdated(data);
-          this.cdr.markForCheck();
+          this.loading.set(false);
         },
         error: (err) => {
-          this.loading = false;
-          this.errorMessage = this.resolveErrorMessage(err);
-          this.cdr.markForCheck();
+          this.loading.set(false);
+          this.errorMessage.set(this.resolveErrorMessage(err));
         },
       });
   }
