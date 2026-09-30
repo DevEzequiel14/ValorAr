@@ -1,5 +1,8 @@
 @if (loading()) {
-  <app-loading></app-loading>
+  <div class="feature-loading" aria-busy="true" aria-live="polite">
+    <app-loading></app-loading>
+    <p class="feature-loading__label">Cargando cotizaciones…</p>
+  </div>
 }
 
 @if (!loading() && errorMessage()) {
@@ -14,19 +17,74 @@
 @if (!loading() && !errorMessage() && isEmpty()) {
   <app-state-message
     type="empty"
-    message="No hay cotizaciones disponibles en este momento."
+    message="No hay cotizaciones disponibles ahora. Reintentá en unos minutos."
     [showRetry]="true"
     (retry)="fetchDolars()"
   ></app-state-message>
 }
 
 @if (!loading() && !errorMessage() && !isEmpty()) {
-  <h2 class="dollars-title">Cotizaciones de todas las casas de cambio</h2>
-  @if (lastUpdated) {
-    <p class="dollars-updated">{{ lastUpdated }}</p>
-  }
-  <div class="chart-container" @scaleFadeIn>
-    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
-    </canvas>
-  </div>
+  <section class="feature-surface" @fadeIn>
+    <header class="feature-hero">
+      <h1 class="feature-hero__title">Dólares</h1>
+      <p class="feature-hero__lede">{{ heroLede() }}</p>
+      <div class="feature-hero__kpis feature-hero__kpis--3">
+        <article class="feature-kpi">
+          <p class="feature-kpi__label">Blue (venta)</p>
+          @if (blueVenta() !== null) {
+            <p class="feature-kpi__value">
+              {{ blueVenta()! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}
+            </p>
+            <p class="feature-kpi__sub">Cotización informal de referencia</p>
+          } @else {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">Sin dato blue en la respuesta</p>
+          }
+        </article>
+        <article class="feature-kpi">
+          <p class="feature-kpi__label">Oficial (venta)</p>
+          @if (oficialVenta() !== null) {
+            <p class="feature-kpi__value feature-kpi__value--accent">
+              {{ oficialVenta()! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}
+            </p>
+            <p class="feature-kpi__sub">Cotización oficial</p>
+          } @else {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">Sin dato oficial</p>
+          }
+        </article>
+        <article class="feature-kpi">
+          <p class="feature-kpi__label">Brecha blue / oficial</p>
+          @if (blueOficialSpread() !== null) {
+            <p class="feature-kpi__value feature-kpi__value--accent">
+              ~{{ blueOficialSpread()! | number: '1.0-0' : 'es-AR' }}%
+            </p>
+            <p class="feature-kpi__sub">Sobre el oficial · misma lectura que el parte</p>
+          } @else {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">Hace falta blue y oficial</p>
+          }
+        </article>
+      </div>
+      @if (lastUpdated) {
+        <p class="feature-meta">{{ lastUpdated }}</p>
+      }
+    </header>
+
+    <h2 class="dollars-chart-title">{{ chartTitle() }}</h2>
+    @if (showingPartial()) {
+      <p class="chart-hint">
+        Mostrando {{ visibleLimit }} de {{ dollars().length }} (blue, oficial y las más usadas).
+      </p>
+    }
+    <div class="feature-chart">
+      <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
+      </canvas>
+    </div>
+    @if (canToggleCasas()) {
+      <button type="button" class="chart-toggle" (click)="toggleShowAllCasas()">
+        {{ showAllCasas() ? 'Ver solo las principales' : 'Ver todas las casas' }}
+      </button>
+    }
+  </section>
 }

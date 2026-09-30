@@ -1,4 +1,7 @@
-<app-loading *ngIf="loading"></app-loading>
+<div class="feature-loading" *ngIf="loading" aria-busy="true" aria-live="polite">
+  <app-loading></app-loading>
+  <p class="feature-loading__label">Cargando rendimientos…</p>
+</div>
 
 <app-state-message
   *ngIf="!loading && errorMessage"
@@ -11,21 +14,85 @@
 <app-state-message
   *ngIf="!loading && !errorMessage && isEmpty"
   type="empty"
-  message="No hay rendimientos disponibles."
+  message="No hay rendimientos ahora. Reintentá en unos minutos."
   [showRetry]="true"
   (retry)="fetchRendimientos()"
 ></app-state-message>
 
 <ng-container *ngIf="!loading && !errorMessage && !isEmpty">
-  <app-select-search
-    [title]="'Selecciona una moneda:'"
-    [items]="availableCurrencies"
-    [selectedItem]="selectedCurrency"
-    (selectionChange)="onCurrencyChange($event)"
-  >
-  </app-select-search>
-  <div class="chart-container" @scaleFadeIn>
-    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
-    </canvas>
-  </div>
+  <section class="feature-surface" @fadeIn>
+    <header class="feature-hero">
+      <h1 class="feature-hero__title">Rendimientos</h1>
+      <p class="feature-hero__lede">{{ heroLede }}</p>
+      <div class="feature-hero__kpis" [class.feature-hero__kpis--3]="showParteCross">
+        <article class="feature-kpi">
+          <p class="feature-kpi__label">APY tope · {{ selectedCurrency }}</p>
+          <p class="feature-kpi__value" *ngIf="bestApy !== null">
+            {{ bestApy | number: '1.0-2' : 'es-AR' }}%
+            <span class="feature-kpi__tag">referencia</span>
+          </p>
+          <p class="feature-kpi__sub" *ngIf="bestApyEntity">{{ bestApyEntity }}</p>
+          <p class="feature-kpi__sub" *ngIf="bestApy === null">Sin APY para esta moneda</p>
+        </article>
+        <ng-container *ngIf="showParteCross">
+          <article class="feature-kpi">
+            <p class="feature-kpi__label">TNA tope · parte</p>
+            <ng-container *ngIf="bestTna !== null; else noTna">
+              <p class="feature-kpi__value feature-kpi__value--accent">
+                {{ bestTna | number: '1.0-1' : 'es-AR' }}%
+                <span class="feature-kpi__tag">referencia</span>
+              </p>
+              <p class="feature-kpi__sub" *ngIf="bestTnaEntity">{{ bestTnaEntity }} · lectura del parte</p>
+              <p class="feature-kpi__sub" *ngIf="!bestTnaEntity">Lectura del parte</p>
+            </ng-container>
+            <ng-template #noTna>
+              <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+              <p class="feature-kpi__sub">Sin TNA para cruzar</p>
+            </ng-template>
+          </article>
+          <article class="feature-kpi">
+            <p class="feature-kpi__label">IPC anualizado · parte</p>
+            <ng-container *ngIf="ipcAnualizado !== null; else noIpc">
+              <p class="feature-kpi__value feature-kpi__value--accent">
+                ~{{ ipcAnualizado | number: '1.0-0' : 'es-AR' }}%
+              </p>
+              <p class="feature-kpi__sub">{{ ipcAnualizadoGloss }}</p>
+            </ng-container>
+            <ng-template #noIpc>
+              <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+              <p class="feature-kpi__sub">Sin IPC para cruzar</p>
+            </ng-template>
+          </article>
+        </ng-container>
+      </div>
+      <p class="feature-meta" *ngIf="dataFreshness" aria-live="polite">{{ dataFreshness }}</p>
+    </header>
+
+    <div class="feature-toolbar">
+      <app-select-search
+        [title]="'Seleccioná una moneda'"
+        [items]="availableCurrencies"
+        [selectedItem]="selectedCurrency"
+        (selectionChange)="onCurrencyChange($event)"
+      >
+      </app-select-search>
+    </div>
+
+    <h2 class="performance-chart-title">APY por entidad · {{ selectedCurrency }}</h2>
+    <p class="chart-hint" *ngIf="showingPartial">
+      Mostramos las {{ visibleLimit }} mejores. El resto sigue disponible.
+    </p>
+    <div class="feature-chart">
+      <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
+      </canvas>
+    </div>
+    <button
+      *ngIf="canToggleEntities"
+      type="button"
+      class="chart-toggle"
+      (click)="toggleShowAllEntities()"
+    >
+      {{ showAllEntities ? 'Ver solo las mejores' : 'Ver todas las entidades' }}
+    </button>
+  </section>
 </ng-container>

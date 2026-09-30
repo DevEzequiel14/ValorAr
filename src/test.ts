@@ -1,3 +1,5 @@
+import { registerLocaleData } from '@angular/common';
+import localeEsAr from '@angular/common/locales/es-AR';
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
@@ -6,6 +8,7 @@ import {
 
 import { registerChartJs } from './app/shared/charts/chart-register';
 
+registerLocaleData(localeEsAr);
 registerChartJs();
 
 getTestBed().initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());

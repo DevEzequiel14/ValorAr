@@ -1,22 +1,54 @@
 @import '../../../styles/variables';
 
-.fixed-title {
-  margin-bottom: 2rem;
-  color: $color-text-primary;
+.feature-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-medium;
+  min-height: 160px;
 }
 
-.chart-container {
-  position: relative;
-  margin: auto;
-  height: 60vh;
-  width: 60vw;
+.feature-loading__label {
+  margin: 0;
+  color: $color-text-secondary;
+  font-size: $font-size-small;
+}
 
-  @media screen and (max-width: 1023px) {
-    width: 75vw;
-  }
+.fixed-chart-title {
+  margin: 0 0 $spacing-medium;
+  color: $color-text-secondary;
+  font-size: $font-size-small;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 
-  @media screen and (max-width: 767px) {
-    height: 45vh;
-    width: 92vw;
+.feature-chart--tall {
+  height: min(70vh, 560px);
+}
+
+.chart-hint {
+  margin: 0 0 $spacing-medium;
+  color: $color-text-secondary;
+  font-size: $font-size-small;
+}
+
+.chart-toggle {
+  display: block;
+  margin: $spacing-medium auto 0;
+  padding: $spacing-small $spacing-medium;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  background: $color-input-bg;
+  color: $color-highlight-primary;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    border-color: $color-highlight-primary;
+    outline: none;
   }
 }

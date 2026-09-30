@@ -13,6 +13,7 @@ describe('FixedTermDepositComponent', () => {
   let httpMock: HttpTestingController;
 
   const apiUrl = environment.argentinaData + '/finanzas/tasas/plazoFijo';
+  const inflationUrl = environment.argentinaData + '/finanzas/indices/inflacion';
 
   const mockPlazoFijo: FixedTermDeposit[] = [
     {
@@ -28,6 +29,34 @@ describe('FixedTermDepositComponent', () => {
       tnaNoClientes: 42,
     },
   ];
+
+  const mockInflation = [{ fecha: '2024-11-01', valor: 2.4 }];
+
+  const flushPlazoAndInflation = (
+    plazos: FixedTermDeposit[] | 'error' = mockPlazoFijo,
+    inflation: unknown[] | 'error' = mockInflation
+  ): void => {
+    const plazoReq = httpMock.expectOne(apiUrl);
+    const inflationReq = httpMock.expectOne(inflationUrl);
+
+    const flushInflation = (): void => {
+      if (inflation === 'error') {
+        inflationReq.flush('Error', { status: 500, statusText: 'Server Error' });
+      } else {
+        inflationReq.flush(inflation);
+      }
+    };
+
+    // Si plazos falla, forkJoin cancela inflación: completar inflación primero.
+    if (plazos === 'error') {
+      flushInflation();
+      plazoReq.flush('Error', { status: 500, statusText: 'Server Error' });
+      return;
+    }
+
+    plazoReq.flush(plazos);
+    flushInflation();
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -54,12 +83,12 @@ describe('FixedTermDepositComponent', () => {
     expect(component.loading).toBe(true);
     expect(fixture.nativeElement.querySelector('app-loading')).toBeTruthy();
 
-    httpMock.expectOne(apiUrl).flush(mockPlazoFijo);
+    flushPlazoAndInflation();
   });
 
   it('should set chart data after successful response', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush(mockPlazoFijo);
+    flushPlazoAndInflation();
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
@@ -72,9 +101,44 @@ describe('FixedTermDepositComponent', () => {
     expect(component.barChartData.datasets?.[1]?.label).toBe('TNA No Clientes');
   });
 
+  it('should echo the home TNA vs IPC reading in the hero', () => {
+    initComponent();
+    flushPlazoAndInflation();
+    fixture.detectChanges();
+
+    expect(component.ipcMensual).toBe(2.4);
+    expect(component.ipcAnualizado).toBeCloseTo(32.92, 1);
+    expect(component.gapEcho).toMatch(/cubre/i);
+    expect(component.heroLede).toContain('Abajo, TNA por entidad');
+    expect(fixture.nativeElement.textContent).toContain('IPC anualizado · parte');
+    expect(fixture.nativeElement.textContent).toMatch(/compuesto del último IPC/i);
+  });
+
+  it('should show data freshness meta with IPC period and TNA honesty', () => {
+    initComponent();
+    flushPlazoAndInflation();
+    fixture.detectChanges();
+
+    expect(component.dataFreshness).toMatch(/^Datos:/);
+    expect(component.dataFreshness).toMatch(/IPC de/i);
+    expect(component.dataFreshness).toMatch(/TNA sin timestamp/i);
+    expect(fixture.nativeElement.querySelector('.feature-meta')?.textContent).toContain('Datos:');
+  });
+
+  it('should keep plazos when inflation fails', () => {
+    initComponent();
+    flushPlazoAndInflation(mockPlazoFijo, 'error');
+    fixture.detectChanges();
+
+    expect(component.loading).toBe(false);
+    expect(component.errorMessage).toBeNull();
+    expect(component.bestTna).toBe(50);
+    expect(component.gapEcho).toMatch(/falta el IPC/i);
+  });
+
   it('should set isEmpty when response is an empty array', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush([]);
+    flushPlazoAndInflation([]);
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
@@ -85,20 +149,20 @@ describe('FixedTermDepositComponent', () => {
 
   it('should set errorMessage on HTTP error', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
+    flushPlazoAndInflation('error');
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
     expect(component.isEmpty).toBe(false);
     expect(component.errorMessage).toBe(
-      'No se pudieron cargar las tasas de plazo fijo (error 500).'
+      'No se pudieron cargar las tasas de plazo fijo. Intentá de nuevo en unos minutos.'
     );
     expect(fixture.nativeElement.querySelector('.state-message--error')).toBeTruthy();
   });
 
   it('should retry fetch when StateMessage emits retry', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
+    flushPlazoAndInflation('error');
     fixture.detectChanges();
 
     const retryButton: HTMLButtonElement | null =
@@ -109,7 +173,7 @@ describe('FixedTermDepositComponent', () => {
 
     expect(component.loading).toBe(true);
 
-    httpMock.expectOne(apiUrl).flush(mockPlazoFijo);
+    flushPlazoAndInflation();
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);

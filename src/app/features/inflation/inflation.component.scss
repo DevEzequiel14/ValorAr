@@ -1,89 +1,72 @@
 @import '../../../styles/variables';
 @import '../../../styles/mixins';
 
-.select-container {
-  @include flex-center(row, start, center);
-  flex-wrap: wrap;
-  gap: $spacing-small;
-  margin-bottom: $spacing-large;
-  width: 100%;
+.parte-cross {
+  margin-top: $spacing-large;
+  padding-top: $spacing-medium;
+  border-top: 1px solid $color-border;
 }
 
-.select-label {
-  @include text-style($color-text-primary, $font-size-base, 500);
-  margin-right: $spacing-small;
+.parte-cross__title {
+  @include text-style($color-text-secondary, $font-size-small, 600);
+  margin: 0 0 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.select-dropdown {
-  flex: 1;
-  min-width: 200px;
-  background-color: $color-input-bg;
-  border: 1px solid $color-border;
-  border-radius: 4px;
-  padding: $spacing-small $spacing-medium;
-  outline: none;
-  cursor: pointer;
-  transition: $transition-standard;
-
-  @include text-style($color-text-primary, $font-size-small, 500);
-
-  &:hover,
-  &:focus {
-    border-color: $color-highlight-primary;
-    box-shadow: 0 0 8px $color-highlight-primary;
-  }
-
-  option {
-    background-color: $color-background;
-    @include text-style($color-text-primary, $font-size-small, 500);
-  }
+.parte-cross__hint {
+  @include text-style($color-text-secondary, $font-size-small, 400);
+  margin: 0 0 $spacing-medium;
+  line-height: $line-height-body;
+  max-width: 48ch;
 }
 
-.chart-container {
-  position: relative;
-  margin: auto;
-  height: 60vh;
-  width: 60vw;
-
-  @media screen and (max-width: 1023px) {
-    width: 75vw;
-  }
-
-  @media screen and (max-width: 767px) {
-    height: 45vh;
-    width: 92vw;
-  }
+.parte-cross__kpis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-medium;
 }
 
-select::-webkit-scrollbar {
-  width: 8px;
+.feature-kpi--compact .feature-kpi__value {
+  font-size: $font-size-xl;
+  margin-bottom: 4px;
 }
 
-select::-webkit-scrollbar-track {
-  background: transparent;
+.feature-kpi--compact .feature-kpi__label {
+  font-size: $font-size-xs;
+  margin-bottom: 4px;
 }
 
-select::-webkit-scrollbar-thumb {
-  background-color: $color-highlight-primary;
-  border-radius: 12px;
-  border: 2px solid $color-input-bg;
+.feature-kpi--compact .feature-kpi__sub {
+  font-size: $font-size-xs;
 }
 
-select::-webkit-scrollbar-thumb:hover {
-  background-color: $color-highlight-secondary;
+.inflation-chart-title {
+  margin: 0 0 $spacing-medium;
+  color: $color-text-secondary;
+  font-size: $font-size-small;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-@media screen and (max-width: 767px) {
-  .select-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.feature-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-medium;
+  min-height: 160px;
+}
 
-  .select-label {
-    margin-right: 0;
-  }
+.feature-loading__label {
+  margin: 0;
+  color: $color-text-secondary;
+  font-size: $font-size-small;
+}
 
-  .select-dropdown {
-    width: 100%;
+@media screen and (min-width: 640px) {
+  .parte-cross__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

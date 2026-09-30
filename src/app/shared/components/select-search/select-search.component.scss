@@ -26,7 +26,6 @@ h4 {
   &:hover,
   &:focus-within {
     border-color: $color-highlight-primary;
-    box-shadow: 0 0 8px $color-highlight-primary;
   }
 }
 
@@ -66,7 +65,7 @@ h4 {
   position: relative;
   @include flex-center(flex, start, center);
   border-radius: $spacing-small;
-  border: 1px solid black;
+  border: 1px solid $color-border;
   padding: 4px 8px;
 }
 
@@ -122,13 +121,12 @@ h4 {
   cursor: pointer;
 
   &:hover {
-    border-color: $color-highlight-primary;
-    box-shadow: 0 0 $spacing-small $color-highlight-primary;
+    background-color: $color-hover;
   }
 
   &.selected {
     background-color: $color-highlight-primary;
-    color: $color-text-primary;
+    color: $color-input-bg;
     font-weight: bold;
   }
 }

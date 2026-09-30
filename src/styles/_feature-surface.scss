@@ -1,0 +1,116 @@
+@import './variables';
+@import './mixins';
+
+.feature-surface {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 $spacing-small $spacing-large;
+}
+
+.feature-hero {
+  padding: $spacing-large;
+  margin-bottom: $spacing-large;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  background-color: $color-input-bg;
+}
+
+.feature-hero__title {
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  line-height: $line-height-tight;
+  letter-spacing: -0.02em;
+  color: $color-text-primary;
+  margin: 0 0 $spacing-small;
+}
+
+.feature-hero__lede {
+  @include text-style($color-text-secondary, $font-size-base, 400);
+  margin: 0 0 $spacing-large;
+  line-height: $line-height-relaxed;
+  max-width: 58ch;
+}
+
+.feature-hero__kpis {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-large;
+}
+
+.feature-kpi__label {
+  @include text-style($color-text-secondary, $font-size-small, 600);
+  margin: 0 0 $spacing-small;
+  letter-spacing: 0.02em;
+}
+
+.feature-kpi__value {
+  font-family: $font-display;
+  font-weight: 700;
+  font-size: $font-size-display;
+  line-height: $line-height-tight;
+  margin: 0 0 $spacing-small;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: $color-highlight-primary;
+}
+
+.feature-kpi__value--muted {
+  color: $color-text-secondary;
+}
+
+.feature-kpi__value--accent {
+  color: $color-highlight-secondary;
+}
+
+.feature-hero__intro {
+  margin-bottom: $spacing-large;
+}
+
+.feature-kpi__sub {
+  @include text-style($color-text-secondary, $font-size-small, 400);
+  margin: 0;
+  line-height: $line-height-body;
+  max-width: 40ch;
+}
+
+.feature-kpi__tag {
+  display: inline-block;
+  margin-left: $spacing-small;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  vertical-align: middle;
+  color: $color-highlight-secondary;
+  background-color: rgba($color-highlight-secondary, 0.15);
+  letter-spacing: 0.02em;
+}
+
+.feature-meta {
+  @include text-style($color-text-secondary, $font-size-small, 400);
+  margin: $spacing-medium 0 0;
+}
+
+.feature-toolbar {
+  margin-bottom: $spacing-large;
+}
+
+.feature-chart {
+  position: relative;
+  width: 100%;
+  height: min(55vh, 420px);
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 640px) {
+  .feature-hero__kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .feature-hero__kpis--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

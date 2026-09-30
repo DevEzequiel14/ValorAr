@@ -15,7 +15,7 @@ export function getChartTextColor(): string {
   return getCssVariable(CHART_CSS_VARS.textPrimary);
 }
 
-export function getChartFont(size = 12, family = 'Arial') {
+export function getChartFont(size = 12, family = "'Source Sans 3', 'Segoe UI', sans-serif") {
   return { size, family };
 }
 

@@ -4,11 +4,11 @@
 .footer {
   @include flex-center(row, center, center);
   padding: $spacing-medium;
-  columns: $color-text-secondary;
-  font-size: 0.75rem;
+  color: $color-text-secondary;
+  font-size: $font-size-xs;
 
   a {
-    @include text-style($color-text-primary, 0.75rem);
+    @include text-style($color-text-primary, $font-size-xs, 400);
     text-decoration: none;
     transition: $transition-standard;
 

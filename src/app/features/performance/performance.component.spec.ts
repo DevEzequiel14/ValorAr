@@ -6,6 +6,8 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PerformanceComponent } from './performance.component';
 import { environment } from '../../../env/environment';
 import { Performance } from '../../core/models/performance';
+import { FixedTermDeposit } from '../../core/models/fixed-term-deposit';
+import { IndiceInflacion } from '../../core/models/indice-inflacion';
 
 describe('PerformanceComponent', () => {
   let component: PerformanceComponent;
@@ -13,6 +15,8 @@ describe('PerformanceComponent', () => {
   let httpMock: HttpTestingController;
 
   const apiUrl = environment.argentinaData + '/finanzas/rendimientos';
+  const plazoUrl = environment.argentinaData + '/finanzas/tasas/plazoFijo';
+  const inflationUrl = environment.argentinaData + '/finanzas/indices/inflacion';
 
   const mockPerformance: Performance[] = [
     {
@@ -26,6 +30,20 @@ describe('PerformanceComponent', () => {
       entidad: 'Banco B',
       rendimientos: [{ moneda: 'USD', apy: 4.1 }],
     },
+  ];
+
+  const mockPlazo: FixedTermDeposit[] = [
+    {
+      entidad: 'Banco TNA',
+      logo: '',
+      tnaClientes: 70,
+      tnaNoClientes: 65,
+    },
+  ];
+
+  const mockInflacion: IndiceInflacion[] = [
+    { fecha: '2024-01-15T12:00:00.000Z', valor: 20.6 },
+    { fecha: '2024-02-15T12:00:00.000Z', valor: 13.2 },
   ];
 
   beforeEach(async () => {
@@ -47,8 +65,46 @@ describe('PerformanceComponent', () => {
     fixture.detectChanges();
   }
 
+  function flushAll(
+    performance: Performance[] | 'error' = mockPerformance,
+    plazos: FixedTermDeposit[] | 'error' = mockPlazo,
+    inflation: IndiceInflacion[] | 'error' = mockInflacion
+  ): void {
+    const perfReq = httpMock.expectOne(apiUrl);
+    const plazoReq = httpMock.expectOne(plazoUrl);
+    const inflationReq = httpMock.expectOne(inflationUrl);
+
+    if (performance === 'error') {
+      // Completar siblings primero para no cancelar el forkJoin por error en performance.
+      if (plazos === 'error') {
+        plazoReq.flush('Error', { status: 500, statusText: 'Server Error' });
+      } else {
+        plazoReq.flush(plazos);
+      }
+      if (inflation === 'error') {
+        inflationReq.flush('Error', { status: 500, statusText: 'Server Error' });
+      } else {
+        inflationReq.flush(inflation);
+      }
+      perfReq.flush('Error', { status: 500, statusText: 'Server Error' });
+      return;
+    }
+
+    if (plazos === 'error') {
+      plazoReq.flush('Error', { status: 500, statusText: 'Server Error' });
+    } else {
+      plazoReq.flush(plazos);
+    }
+    if (inflation === 'error') {
+      inflationReq.flush('Error', { status: 500, statusText: 'Server Error' });
+    } else {
+      inflationReq.flush(inflation);
+    }
+    perfReq.flush(performance);
+  }
+
   function flushSuccess(data: Performance[] = mockPerformance): void {
-    httpMock.expectOne(apiUrl).flush(data);
+    flushAll(data);
     fixture.detectChanges();
   }
 
@@ -58,7 +114,7 @@ describe('PerformanceComponent', () => {
     expect(component.loading).toBe(true);
     expect(fixture.nativeElement.querySelector('app-loading')).toBeTruthy();
 
-    httpMock.expectOne(apiUrl).flush(mockPerformance);
+    flushAll();
   });
 
   it('should expose available currencies and chart data for default currency', () => {
@@ -75,6 +131,43 @@ describe('PerformanceComponent', () => {
     expect(component.barChartData.datasets?.[0]?.label).toBe('Rendimientos en ARS');
   });
 
+  it('should echo parte TNA and IPC anualizado in hero for ARS', () => {
+    initComponent();
+    flushSuccess();
+
+    expect(component.bestTna).toBe(70);
+    expect(component.bestTnaEntity).toBe('Banco TNA');
+    expect(component.ipcAnualizado).not.toBeNull();
+    expect(component.gapEcho).toMatch(/APY/i);
+    expect(fixture.nativeElement.textContent).toContain('IPC anualizado · parte');
+    expect(fixture.nativeElement.textContent).toMatch(/compuesto del último IPC/i);
+    expect(fixture.nativeElement.textContent).toContain('TNA tope · parte');
+  });
+
+  it('should show data freshness meta with IPC period and rate honesty', () => {
+    initComponent();
+    flushSuccess();
+
+    expect(component.dataFreshness).toMatch(/^Datos:/);
+    expect(component.dataFreshness).toMatch(/IPC de/i);
+    expect(component.dataFreshness).toMatch(/APY sin timestamp/i);
+    expect(component.dataFreshness).toMatch(/TNA sin timestamp/i);
+    expect(fixture.nativeElement.querySelector('.feature-meta')?.textContent).toContain('Datos:');
+  });
+
+  it('should keep rendimientos when plazo or inflation fails', () => {
+    initComponent();
+    flushAll(mockPerformance, 'error', 'error');
+    fixture.detectChanges();
+
+    expect(component.loading).toBe(false);
+    expect(component.errorMessage).toBeNull();
+    expect(component.bestApy).toBe(80);
+    expect(component.bestTna).toBeNull();
+    expect(component.ipcAnualizado).toBeNull();
+    expect(component.heroLede).toMatch(/falta TNA o IPC/i);
+  });
+
   it('should update barChartData when currency changes', () => {
     initComponent();
     flushSuccess();
@@ -86,6 +179,22 @@ describe('PerformanceComponent', () => {
     expect(component.barChartData.labels).toEqual(['Banco A', 'Banco B']);
     expect(component.barChartData.datasets?.[0]?.data).toEqual([5.2, 4.1]);
     expect(component.barChartData.datasets?.[0]?.label).toBe('Rendimientos en USD');
+    expect(component.heroLede).toMatch(/aplica a pesos/i);
+  });
+
+  it('should hide parte TNA/IPC KPIs when currency is not ARS', () => {
+    initComponent();
+    flushSuccess();
+    expect(component.showParteCross).toBe(true);
+    expect(fixture.nativeElement.textContent).toContain('IPC anualizado · parte');
+
+    component.onCurrencyChange('USD');
+    fixture.detectChanges();
+
+    expect(component.showParteCross).toBe(false);
+    expect(fixture.nativeElement.textContent).not.toContain('IPC anualizado · parte');
+    expect(fixture.nativeElement.textContent).not.toContain('TNA tope · parte');
+    expect(fixture.nativeElement.textContent).toContain('APY tope · USD');
   });
 
   it('should set isEmpty when response is an empty array', () => {
@@ -115,18 +224,20 @@ describe('PerformanceComponent', () => {
 
   it('should set errorMessage on HTTP error', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
+    flushAll('error');
     fixture.detectChanges();
 
     expect(component.loading).toBe(false);
     expect(component.isEmpty).toBe(false);
-    expect(component.errorMessage).toBe('No se pudieron cargar los rendimientos (error 500).');
+    expect(component.errorMessage).toBe(
+      'No se pudieron cargar los rendimientos. Intentá de nuevo en unos minutos.'
+    );
     expect(fixture.nativeElement.querySelector('.state-message--error')).toBeTruthy();
   });
 
   it('should retry fetch when StateMessage emits retry', () => {
     initComponent();
-    httpMock.expectOne(apiUrl).flush('Error', { status: 500, statusText: 'Server Error' });
+    flushAll('error');
     fixture.detectChanges();
 
     const retryButton: HTMLButtonElement | null =
@@ -137,8 +248,7 @@ describe('PerformanceComponent', () => {
 
     expect(component.loading).toBe(true);
 
-    httpMock.expectOne(apiUrl).flush(mockPerformance);
-    fixture.detectChanges();
+    flushSuccess();
 
     expect(component.loading).toBe(false);
     expect(component.errorMessage).toBeNull();

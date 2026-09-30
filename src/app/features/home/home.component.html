@@ -1,25 +1,212 @@
-<section class="home" @scaleFadeIn>
+<section class="home" @fadeIn>
   <header class="home-header">
-    <h1>ValorAr</h1>
-    <p class="home-subtitle">Información Financiera 🇦🇷</p>
-    <p class="home-intro">
-      Explorá indicadores clave de la economía argentina con gráficos interactivos.
-    </p>
+    <div class="home-masthead">
+      <h1 class="home-brand">ValorAr</h1>
+      <p class="home-masthead__meta">
+        <span class="home-masthead__mark">Parte del día</span>
+        <time class="home-masthead__date" [attr.datetime]="todayIso">{{ todayLabel }}</time>
+      </p>
+    </div>
+    <p class="home-tagline">Seguí lo que mueve tus finanzas cotidianas en Argentina.</p>
   </header>
 
-  <div class="hub-grid">
-    @for (card of hubCards; track card.route) {
-      <article class="hub-card">
-        <div class="hub-card__icon">
-          <img [src]="card.iconSrc" [alt]="card.iconAlt" width="28" height="28" />
+  @if (loading()) {
+    <div class="home-loading" aria-busy="true" aria-live="polite">
+      <app-loading></app-loading>
+      <p class="home-loading__label">Cargando el panorama de hoy…</p>
+    </div>
+  } @else if (loadFailed()) {
+    <app-state-message
+      type="error"
+      message="No pudimos cargar el panorama de hoy. Revisá tu conexión e intentá de nuevo."
+      [showRetry]="true"
+      (retry)="retry()"
+    ></app-state-message>
+  } @else {
+    <section class="feature-hero" aria-labelledby="briefing-title">
+      <div class="feature-hero__intro">
+        <h2 id="briefing-title" class="feature-hero__title">Qué importa hoy</h2>
+        <p class="feature-hero__lede">{{ briefingLede() }}</p>
+      </div>
+
+      @if (hasPartialFailure()) {
+        <p class="briefing-partial" role="status" aria-live="polite">
+          No pudimos cargar {{ failedSourcesLabel() }}. El resto del panorama está disponible.
+          <button type="button" class="briefing-partial__retry" (click)="retry()">
+            Reintentar todo
+          </button>
+        </p>
+      }
+
+      <div class="feature-hero__kpis feature-hero__kpis--3">
+        <article class="feature-kpi" [class.feature-kpi--error]="snapshot()?.dollarError">
+          <p class="feature-kpi__label">
+            Dólar blue (venta)
+            @if (snapshot()?.dollarError) {
+              <span class="feature-kpi__badge">sin dato</span>
+            }
+          </p>
+          @if (snapshot()?.blueVenta !== null) {
+            <p class="feature-kpi__value">{{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}</p>
+            <p class="feature-kpi__sub">Cotización informal de referencia</p>
+          } @else if (snapshot()?.dollarError) {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">No se pudo cargar el blue</p>
+            <button
+              type="button"
+              class="feature-kpi__retry"
+              (click)="retrySource('dollar')"
+              [disabled]="retryingSource() !== null"
+            >
+              {{ retryingSource() === 'dollar' ? 'Reintentando…' : 'Reintentar blue' }}
+            </button>
+          } @else {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">Sin dato de blue por ahora</p>
+          }
+        </article>
+
+        <article class="feature-kpi" [class.feature-kpi--error]="snapshot()?.inflationError">
+          <p class="feature-kpi__label">
+            IPC mensual
+            @if (snapshot()?.inflationError) {
+              <span class="feature-kpi__badge">sin dato</span>
+            }
+          </p>
+          @if (snapshot()?.ipcMensual !== null) {
+            <p class="feature-kpi__value feature-kpi__value--accent">{{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</p>
+            <p class="feature-kpi__sub">Índice de precios al consumidor</p>
+          } @else if (snapshot()?.inflationError) {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">No se pudo cargar la inflación</p>
+            <button
+              type="button"
+              class="feature-kpi__retry"
+              (click)="retrySource('inflation')"
+              [disabled]="retryingSource() !== null"
+            >
+              {{ retryingSource() === 'inflation' ? 'Reintentando…' : 'Reintentar IPC' }}
+            </button>
+          } @else {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">Sin dato de inflación por ahora</p>
+          }
+        </article>
+
+        <article class="feature-kpi" [class.feature-kpi--error]="snapshot()?.plazoError">
+          <p class="feature-kpi__label">
+            TNA tope · muestra
+            @if (snapshot()?.plazoError) {
+              <span class="feature-kpi__badge">sin dato</span>
+            }
+          </p>
+          @if (snapshot()?.mejorTna !== null) {
+            <p class="feature-kpi__value feature-kpi__value--accent">
+              {{ snapshot()!.mejorTna! | number: '1.0-1' : 'es-AR' }}%
+              <span class="feature-kpi__tag">referencia</span>
+            </p>
+            <p class="feature-kpi__sub">
+              Máxima entre entidades · plazo fijo
+              @if (snapshot()?.mejorTnaEntidad) {
+                · {{ snapshot()!.mejorTnaEntidad }}
+              }
+            </p>
+          } @else if (snapshot()?.plazoError) {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">No se pudieron cargar las tasas</p>
+            <button
+              type="button"
+              class="feature-kpi__retry"
+              (click)="retrySource('plazo')"
+              [disabled]="retryingSource() !== null"
+            >
+              {{ retryingSource() === 'plazo' ? 'Reintentando…' : 'Reintentar tasas' }}
+            </button>
+          } @else {
+            <p class="feature-kpi__value feature-kpi__value--muted">—</p>
+            <p class="feature-kpi__sub">Sin dato de tasas por ahora</p>
+          }
+        </article>
+      </div>
+
+      @if (dataFreshness()) {
+        <p class="feature-meta" aria-live="polite">{{ dataFreshness() }}</p>
+      }
+    </section>
+
+    <section class="strips" aria-label="Lecturas cruzadas">
+      <article class="strip strip--dollar">
+        <div class="strip__icon strip__icon--blue" aria-hidden="true">
+          <img src="/assets/icons/currency-dollar.svg" alt="" width="22" height="22" />
         </div>
-        <h2 class="hub-card__title">{{ card.title }}</h2>
-        <p class="hub-card__description">{{ card.description }}</p>
-        @if (card.route === '/dollars' && bluePreview) {
-          <p class="hub-card__preview">{{ bluePreview }}</p>
-        }
-        <a [routerLink]="card.route" class="hub-card__cta">Ver gráfico</a>
+        <div class="strip__main">
+          <h3 class="strip__title">¿Dólar o pesos?</h3>
+          <div class="strip__pills">
+            @if (snapshot()?.blueVenta !== null) {
+              <span class="pill pill--priority">Blue {{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}</span>
+            }
+            @if (snapshot()?.oficialVenta !== null) {
+              <span class="pill pill--secondary">Oficial {{ snapshot()!.oficialVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}</span>
+            }
+            @if (blueOficialSpread() !== null) {
+              <span class="pill pill--accent pill--priority">Brecha ~{{ blueOficialSpread()! | number: '1.0-0' : 'es-AR' }}%</span>
+            }
+            @if (snapshot()?.ipcMensual !== null) {
+              <span class="pill pill--accent pill--secondary">IPC mensual {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</span>
+            }
+          </div>
+          <p class="strip__verdict">{{ dollarStrip().verdict }}</p>
+          <p class="strip__body">{{ dollarStrip().detail }}</p>
+        </div>
+        <a routerLink="/dollars" class="strip__cta">Comparar blue y oficial</a>
       </article>
-    }
-  </div>
+
+      <article class="strip strip--tna">
+        <div class="strip__icon strip__icon--orange" aria-hidden="true">
+          <img src="/assets/icons/building-library.svg" alt="" width="22" height="22" />
+        </div>
+        <div class="strip__main">
+          <h3 class="strip__title">¿Plazo fijo vs inflación?</h3>
+          <div class="strip__pills">
+            @if (snapshot()?.mejorTna !== null) {
+              <span class="pill pill--priority">TNA {{ snapshot()!.mejorTna! | number: '1.0-1' : 'es-AR' }}%</span>
+            }
+            @if (ipcAnualizado() !== null) {
+              <span class="pill pill--accent pill--priority">~{{ ipcAnualizado()! | number: '1.0-0' : 'es-AR' }}% anual</span>
+            }
+            @if (snapshot()?.ipcMensual !== null) {
+              <span class="pill pill--accent pill--secondary">IPC mensual {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</span>
+            }
+          </div>
+          <p class="strip__verdict">{{ tnaStrip().verdict }}</p>
+          <p class="strip__body">{{ tnaStrip().detail }}</p>
+        </div>
+        <a routerLink="/plazo-fijo" class="strip__cta">Ver tasas por entidad</a>
+      </article>
+    </section>
+
+    <p class="home-disclaimer">
+      Lectura educativa con datos públicos. No es asesoramiento financiero.
+    </p>
+  }
+
+  <nav class="hub" aria-labelledby="hub-title">
+    <h2 id="hub-title" class="hub__title">Más indicadores</h2>
+    <ul class="hub-list">
+      @for (link of hubLinks; track link.route) {
+        <li>
+          <a [routerLink]="link.route" class="hub-link">
+            <span class="hub-link__title">{{ link.title }}</span>
+            <span class="hub-link__meta">
+              @if (link.route === '/dollars' && snapshot()?.blueVenta !== null) {
+                Blue {{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}
+              } @else {
+                {{ link.description }}
+              }
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
 </section>
