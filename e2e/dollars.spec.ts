@@ -9,18 +9,13 @@ test.describe('Dollars page', () => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'ValorAr', level: 1 })).toBeVisible();
 
-    await page
-      .getByRole('article')
-      .filter({ hasText: 'Dólares' })
-      .getByRole('link', { name: 'Ver gráfico' })
-      .click();
+    // Hub siempre está en home; el CTA del strip depende de que termine el briefing.
+    await page.locator('nav.hub').getByRole('link', { name: /Dólares/ }).click();
 
     await expect(page).toHaveURL(/\/dollars$/);
     await expect(page.locator('app-loading')).toHaveCount(0);
-    await expect(page.locator('.chart-container canvas')).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Cotizaciones de todas las casas de cambio' })
-    ).toBeVisible();
+    await expect(page.locator('.feature-chart canvas')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Todas las casas' })).toBeVisible();
   });
 
   test('shows empty state when API returns no data', async ({ page }) => {
@@ -30,7 +25,7 @@ test.describe('Dollars page', () => {
 
     await expect(page.locator('app-loading')).toHaveCount(0);
     await expect(page.locator('.state-message--empty')).toBeVisible();
-    await expect(page.locator('.chart-container canvas')).toHaveCount(0);
+    await expect(page.locator('.feature-chart canvas')).toHaveCount(0);
   });
 
   test('can navigate directly to dollars via URL', async ({ page }) => {
@@ -39,7 +34,7 @@ test.describe('Dollars page', () => {
     await page.goto('/dollars');
 
     await expect(page.locator('app-loading')).toHaveCount(0);
-    await expect(page.locator('.chart-container canvas')).toBeVisible();
+    await expect(page.locator('.feature-chart canvas')).toBeVisible();
     expect(mockDollarsResponse.length).toBeGreaterThan(0);
   });
 });
