@@ -34,7 +34,9 @@
           <p class="feature-kpi__value feature-kpi__value--muted" *ngIf="latestIpcForYear === null">
             —
           </p>
-          <p class="feature-kpi__sub" *ngIf="latestIpcLabel">Año del gráfico · {{ latestIpcLabel }}</p>
+          <p class="feature-kpi__sub" *ngIf="latestIpcLabel">
+            Año del gráfico · {{ latestIpcLabel }}
+          </p>
           <p class="feature-kpi__sub" *ngIf="!latestIpcLabel">Sin dato para el año del gráfico</p>
         </article>
       </div>
@@ -50,7 +52,8 @@
                 ~{{ parteIpcAnualizado | number: '1.0-0' : 'es-AR' }}%
               </p>
               <p class="feature-kpi__sub">
-                <ng-container *ngIf="parteIpcPeriod">{{ parteIpcPeriod }} · </ng-container>{{ ipcAnualizadoGloss }}
+                <ng-container *ngIf="parteIpcPeriod">{{ parteIpcPeriod }} · </ng-container
+                >{{ ipcAnualizadoGloss }}
               </p>
             </ng-container>
             <ng-template #noAnual>
@@ -65,7 +68,9 @@
                 {{ bestTna | number: '1.0-1' : 'es-AR' }}%
                 <span class="feature-kpi__tag">referencia</span>
               </p>
-              <p class="feature-kpi__sub" *ngIf="bestTnaEntity">{{ bestTnaEntity }} · cruce del parte</p>
+              <p class="feature-kpi__sub" *ngIf="bestTnaEntity">
+                {{ bestTnaEntity }} · cruce del parte
+              </p>
               <p class="feature-kpi__sub" *ngIf="!bestTnaEntity">Cruce del parte</p>
             </ng-container>
             <ng-template #noTna>

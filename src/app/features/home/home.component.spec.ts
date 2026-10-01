@@ -4,11 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import {
-  annualizeMonthlyPct,
-  blueOficialSpreadPct,
-  HomeComponent,
-} from './home.component';
+import { annualizeMonthlyPct, blueOficialSpreadPct, HomeComponent } from './home.component';
 import { environment } from '../../../env/environment';
 
 describe('HomeComponent', () => {
@@ -22,9 +18,7 @@ describe('HomeComponent', () => {
     plazos: unknown[] = []
   ): void => {
     httpMock.expectOne(environment.dollar + '/dolares').flush(dollars);
-    httpMock
-      .expectOne(environment.argentinaData + '/finanzas/indices/inflacion')
-      .flush(inflation);
+    httpMock.expectOne(environment.argentinaData + '/finanzas/indices/inflacion').flush(inflation);
     httpMock.expectOne(environment.argentinaData + '/finanzas/tasas/plazoFijo').flush(plazos);
   };
 

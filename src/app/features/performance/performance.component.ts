@@ -185,9 +185,7 @@ export class PerformanceComponent implements OnInit {
         const rendimiento = r.rendimientos.find(
           (rend) => rend.moneda.toLowerCase() === currency.toLowerCase()
         );
-        return rendimiento?.apy != null
-          ? { entidad: r.entidad, apy: rendimiento.apy }
-          : null;
+        return rendimiento?.apy != null ? { entidad: r.entidad, apy: rendimiento.apy } : null;
       })
       .filter((row): row is { entidad: string; apy: number } => row !== null)
       .sort((a, b) => b.apy - a.apy);
@@ -288,8 +286,7 @@ export class PerformanceComponent implements OnInit {
 
     if (!isArs) {
       this.gapEcho = null;
-      this.heroLede =
-        `APY en ${this.selectedCurrency} es una referencia entre entidades. El cruce con TNA e IPC del parte aplica a pesos (ARS).`;
+      this.heroLede = `APY en ${this.selectedCurrency} es una referencia entre entidades. El cruce con TNA e IPC del parte aplica a pesos (ARS).`;
       return;
     }
 

@@ -3,11 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import {
-  DOLLARS_VISIBLE_LIMIT,
-  DollarsComponent,
-  prioritizeDollars,
-} from './dollars.component';
+import { DOLLARS_VISIBLE_LIMIT, DollarsComponent, prioritizeDollars } from './dollars.component';
 import { environment } from '../../../env/environment';
 import { Dollar } from '../../core/models/dollar';
 

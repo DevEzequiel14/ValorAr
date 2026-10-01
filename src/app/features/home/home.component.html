@@ -47,7 +47,9 @@
             }
           </p>
           @if (snapshot()?.blueVenta !== null) {
-            <p class="feature-kpi__value">{{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}</p>
+            <p class="feature-kpi__value">
+              {{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}
+            </p>
             <p class="feature-kpi__sub">Cotización informal de referencia</p>
           } @else if (snapshot()?.dollarError) {
             <p class="feature-kpi__value feature-kpi__value--muted">—</p>
@@ -74,7 +76,9 @@
             }
           </p>
           @if (snapshot()?.ipcMensual !== null) {
-            <p class="feature-kpi__value feature-kpi__value--accent">{{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</p>
+            <p class="feature-kpi__value feature-kpi__value--accent">
+              {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%
+            </p>
             <p class="feature-kpi__sub">Índice de precios al consumidor</p>
           } @else if (snapshot()?.inflationError) {
             <p class="feature-kpi__value feature-kpi__value--muted">—</p>
@@ -143,16 +147,30 @@
           <h3 class="strip__title">¿Dólar o pesos?</h3>
           <div class="strip__pills">
             @if (snapshot()?.blueVenta !== null) {
-              <span class="pill pill--priority">Blue {{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}</span>
+              <span class="pill pill--priority"
+                >Blue
+                {{
+                  snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR'
+                }}</span
+              >
             }
             @if (snapshot()?.oficialVenta !== null) {
-              <span class="pill pill--secondary">Oficial {{ snapshot()!.oficialVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}</span>
+              <span class="pill pill--secondary"
+                >Oficial
+                {{
+                  snapshot()!.oficialVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR'
+                }}</span
+              >
             }
             @if (blueOficialSpread() !== null) {
-              <span class="pill pill--accent pill--priority">Brecha ~{{ blueOficialSpread()! | number: '1.0-0' : 'es-AR' }}%</span>
+              <span class="pill pill--accent pill--priority"
+                >Brecha ~{{ blueOficialSpread()! | number: '1.0-0' : 'es-AR' }}%</span
+              >
             }
             @if (snapshot()?.ipcMensual !== null) {
-              <span class="pill pill--accent pill--secondary">IPC mensual {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</span>
+              <span class="pill pill--accent pill--secondary"
+                >IPC mensual {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</span
+              >
             }
           </div>
           <p class="strip__verdict">{{ dollarStrip().verdict }}</p>
@@ -169,13 +187,19 @@
           <h3 class="strip__title">¿Plazo fijo vs inflación?</h3>
           <div class="strip__pills">
             @if (snapshot()?.mejorTna !== null) {
-              <span class="pill pill--priority">TNA {{ snapshot()!.mejorTna! | number: '1.0-1' : 'es-AR' }}%</span>
+              <span class="pill pill--priority"
+                >TNA {{ snapshot()!.mejorTna! | number: '1.0-1' : 'es-AR' }}%</span
+              >
             }
             @if (ipcAnualizado() !== null) {
-              <span class="pill pill--accent pill--priority">~{{ ipcAnualizado()! | number: '1.0-0' : 'es-AR' }}% anual</span>
+              <span class="pill pill--accent pill--priority"
+                >~{{ ipcAnualizado()! | number: '1.0-0' : 'es-AR' }}% anual</span
+              >
             }
             @if (snapshot()?.ipcMensual !== null) {
-              <span class="pill pill--accent pill--secondary">IPC mensual {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</span>
+              <span class="pill pill--accent pill--secondary"
+                >IPC mensual {{ snapshot()!.ipcMensual! | number: '1.1-1' : 'es-AR' }}%</span
+              >
             }
           </div>
           <p class="strip__verdict">{{ tnaStrip().verdict }}</p>
@@ -199,7 +223,8 @@
             <span class="hub-link__title">{{ link.title }}</span>
             <span class="hub-link__meta">
               @if (link.route === '/dollars' && snapshot()?.blueVenta !== null) {
-                Blue {{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}
+                Blue
+                {{ snapshot()!.blueVenta! | currency: 'ARS' : 'symbol-narrow' : '1.0-0' : 'es-AR' }}
               } @else {
                 {{ link.description }}
               }

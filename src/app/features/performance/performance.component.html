@@ -42,7 +42,9 @@
                 {{ bestTna | number: '1.0-1' : 'es-AR' }}%
                 <span class="feature-kpi__tag">referencia</span>
               </p>
-              <p class="feature-kpi__sub" *ngIf="bestTnaEntity">{{ bestTnaEntity }} · lectura del parte</p>
+              <p class="feature-kpi__sub" *ngIf="bestTnaEntity">
+                {{ bestTnaEntity }} · lectura del parte
+              </p>
               <p class="feature-kpi__sub" *ngIf="!bestTnaEntity">Lectura del parte</p>
             </ng-container>
             <ng-template #noTna>

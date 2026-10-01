@@ -16,14 +16,8 @@ import {
   HomeBriefingService,
   HomeBriefingSnapshot,
 } from '../../core/services/home-briefing.service';
-import {
-  blueOficialSpreadPct,
-  dollarGapVerdict,
-} from '../../shared/readings/dollar-gap';
-import {
-  annualizeMonthlyPct,
-  tnaVsIpcVerdict,
-} from '../../shared/readings/tna-vs-ipc';
+import { blueOficialSpreadPct, dollarGapVerdict } from '../../shared/readings/dollar-gap';
+import { annualizeMonthlyPct, tnaVsIpcVerdict } from '../../shared/readings/tna-vs-ipc';
 import {
   formatDatosMeta,
   formatSourceDateTime,
@@ -81,13 +75,7 @@ function formatTodayLabel(date = new Date()): string {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    RouterModule,
-    CurrencyPipe,
-    DecimalPipe,
-    LoadingComponent,
-    StateMessageComponent,
-  ],
+  imports: [RouterModule, CurrencyPipe, DecimalPipe, LoadingComponent, StateMessageComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -181,8 +169,7 @@ export class HomeComponent implements OnInit {
 
     const dollar = this.dollarStrip();
     const tna = this.tnaStrip();
-    const hasDollarCross =
-      !s.dollarError && s.blueVenta !== null && s.oficialVenta !== null;
+    const hasDollarCross = !s.dollarError && s.blueVenta !== null && s.oficialVenta !== null;
     const hasTnaCross = s.mejorTna !== null && s.ipcMensual !== null;
 
     if (hasDollarCross && hasTnaCross) {
@@ -272,7 +259,8 @@ export class HomeComponent implements OnInit {
     if (!s || s.mejorTna === null || s.ipcMensual === null) {
       return {
         verdict: 'Falta TNA o IPC para comparar.',
-        detail: 'Cuando carguen ambos, acá anualizamos el IPC para ponerlo en la misma escala que la TNA.',
+        detail:
+          'Cuando carguen ambos, acá anualizamos el IPC para ponerlo en la misma escala que la TNA.',
       };
     }
     const tna = s.mejorTna;

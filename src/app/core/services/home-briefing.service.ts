@@ -71,13 +71,13 @@ export class HomeBriefingService {
     };
   }
 
-  private dollarSlice(dollars: Dollar[] | null): Pick<
+  private dollarSlice(
+    dollars: Dollar[] | null
+  ): Pick<
     HomeBriefingSnapshot,
     'blueVenta' | 'blueCompra' | 'blueUpdatedAt' | 'oficialVenta' | 'dollarError'
   > {
-    const blue = dollars?.find(
-      (d) => d.casa === 'blue' || d.nombre.toLowerCase().includes('blue')
-    );
+    const blue = dollars?.find((d) => d.casa === 'blue' || d.nombre.toLowerCase().includes('blue'));
     const oficial = dollars?.find(
       (d) => d.casa === 'oficial' || d.nombre.toLowerCase().includes('oficial')
     );
@@ -90,10 +90,9 @@ export class HomeBriefingService {
     };
   }
 
-  private inflationSlice(inflation: IndiceInflacion[] | null): Pick<
-    HomeBriefingSnapshot,
-    'ipcMensual' | 'ipcFecha' | 'inflationError'
-  > {
+  private inflationSlice(
+    inflation: IndiceInflacion[] | null
+  ): Pick<HomeBriefingSnapshot, 'ipcMensual' | 'ipcFecha' | 'inflationError'> {
     const latestIpc = inflation?.length
       ? [...inflation].sort((a, b) => a.fecha.localeCompare(b.fecha)).at(-1)
       : null;
@@ -104,10 +103,9 @@ export class HomeBriefingService {
     };
   }
 
-  private plazoSlice(plazos: FixedTermDeposit[] | null): Pick<
-    HomeBriefingSnapshot,
-    'mejorTna' | 'mejorTnaEntidad' | 'plazoError'
-  > {
+  private plazoSlice(
+    plazos: FixedTermDeposit[] | null
+  ): Pick<HomeBriefingSnapshot, 'mejorTna' | 'mejorTnaEntidad' | 'plazoError'> {
     let mejorTna: number | null = null;
     let mejorTnaEntidad: string | null = null;
     if (plazos?.length) {

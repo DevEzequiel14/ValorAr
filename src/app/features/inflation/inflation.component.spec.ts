@@ -107,10 +107,7 @@ describe('InflationComponent', () => {
     flushSuccess();
 
     // Latest overall IPC = 13.2% → anualizado ~358%; TNA 50% → no alcanza
-    expect(component.parteIpcAnualizado).toBeCloseTo(
-      (Math.pow(1 + 13.2 / 100, 12) - 1) * 100,
-      0
-    );
+    expect(component.parteIpcAnualizado).toBeCloseTo((Math.pow(1 + 13.2 / 100, 12) - 1) * 100, 0);
     expect(component.bestTna).toBe(50);
     expect(component.gapEcho).toMatch(/no alcanza/i);
     expect(component.heroLede).toMatch(/año elegido|parte/i);

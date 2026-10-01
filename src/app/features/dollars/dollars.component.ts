@@ -25,14 +25,8 @@ import {
   getChartPlugins,
   getChartTicks,
 } from '../../shared/charts/chart-theme';
-import {
-  blueOficialSpreadPct,
-  dollarGapVerdict,
-} from '../../shared/readings/dollar-gap';
-import {
-  formatDatosMeta,
-  formatSourceDateTime,
-} from '../../shared/readings/source-freshness';
+import { blueOficialSpreadPct, dollarGapVerdict } from '../../shared/readings/dollar-gap';
+import { formatDatosMeta, formatSourceDateTime } from '../../shared/readings/source-freshness';
 
 /** Casas cotidianas primero; el resto queda detrás de “Ver todas”. */
 export const DOLLARS_VISIBLE_LIMIT = 5;
@@ -57,13 +51,7 @@ function dollarPriority(d: Dollar): number {
 @Component({
   selector: 'app-dollars',
   standalone: true,
-  imports: [
-    BaseChartDirective,
-    LoadingComponent,
-    StateMessageComponent,
-    CurrencyPipe,
-    DecimalPipe,
-  ],
+  imports: [BaseChartDirective, LoadingComponent, StateMessageComponent, CurrencyPipe, DecimalPipe],
   templateUrl: './dollars.component.html',
   styleUrl: './dollars.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
