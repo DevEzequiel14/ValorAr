@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist/valor-ar"
+  publish = "dist/valor-ar/browser"
 
 [build.environment]
   NODE_VERSION = "20"

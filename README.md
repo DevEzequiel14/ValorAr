@@ -73,7 +73,7 @@ La app queda disponible en `http://localhost:4200/`.
 La configuración de build está documentada en [`netlify.toml`](netlify.toml) en la raíz del repositorio:
 
 - **Build command:** `npm run build`
-- **Publish directory:** `dist/valor-ar`
+- **Publish directory:** `dist/valor-ar/browser` (salida del builder `application` de Angular)
 - **Node.js:** 20 (`NODE_VERSION`, con `NETLIFY_USE_NPM` para usar npm)
 
 Netlify detecta ese archivo automáticamente al conectar el repo; no hace falta repetir esos valores en el panel.
